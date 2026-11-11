@@ -70,6 +70,8 @@ Still to confirm on the live PAP (plan, phase 1).
 2. **`clearence1` carries no meaning.** All four datasets use it. Thanks to the
    buyer binding it isn't a leak, but the rulebook should give roles a meaning
    (levels or classes) or drop them.
-3. **The verifier policy has to list every role of a credential type.** The TIL
-   keeps one entry per (buyer, credential type), and a later purchase would
-   overwrite the earlier one. The generator derives this list automatically.
+3. **The verifier policy lists every role of a credential type.** The verifier
+   checks that every role in the credential is in the TIL entry's allowed values (a
+   subset check), and a consumer's users hold all their roles. TIL entries themselves
+   are per order (scoped), see [revocation-and-trust-anchor](revocation-and-trust-anchor.md).
+   The generator derives this list automatically.

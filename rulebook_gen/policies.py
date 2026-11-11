@@ -122,9 +122,11 @@ def verifier_policy(credential, allowed_roles):
 def characteristics(provider, offer, all_offers):
     """The <offer>.credentials.json content for one offer.
 
-    The TIL keeps ONE entry per (buyer, credential type), so the verifier policy
-    must accept every role this provider grants with that credential type; a
-    later purchase would otherwise overwrite the roles of an earlier one.
+    The verifier checks that EVERY role of the presented credential (all roles with
+    target roles-dataspace) is in the TIL entry's allowedValues (a subset check). A
+    consumer's users hold all the roles their organisation gave them, so each entry
+    must accept every role this provider grants with that credential type, or a user
+    with two of them would be rejected.
     """
     build = CLASSES[offer["class"]]
     roles = sorted(

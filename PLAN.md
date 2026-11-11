@@ -48,8 +48,14 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [ ] More classes when an offer needs them, each with its legal text and enforced constraints.
       Candidates: `trial` (+ `odrl:dateTime` expiry), `restricted` (+ claim on
       organisation type or declared purpose via `ovc:leftOperand`).
-- [ ] Automatic revocation when an order ends or a participant leaves (rulebook R4.3):
-      check what contract-management does on order cancellation.
+- [x] Revocation investigated (2026-11-11, docs/revocation-and-trust-anchor.md):
+      automatic per order (any state other than completed) and per participant
+      (portal deactivation removes it from the trust anchor).
+- [ ] End-to-end test: throwaway order completed → cancelled; TIL scope and PAP
+      policy gone, request → 403.
+- [ ] Script to cancel all orders of a participant (offboarding cleanup, R4.3).
+- [ ] Trust-anchor record (R2.5): audit trigger on tildb (dataspace-on-upv
+      trust_anchor) + registration history in On-Boarding-Portal.
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
       a URL in the description) so a buyer sees what they agree to.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.

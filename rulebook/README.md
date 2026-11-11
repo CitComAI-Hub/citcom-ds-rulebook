@@ -67,8 +67,11 @@ by hand that this repository does not produce is a breach of §8 *(audited:
 - it treats every participant the same way, including itself;
 - it does not use its position to access other participants' data or services;
 - it keeps a record of every change to the trust anchor (who, when, why) and shares it
-  with the governance authority on request *(audited: record still to be set up, see
-  PLAN)*.
+  with the governance authority on request *(audited: database audit log on the trust
+  anchor, plus portal history; to be set up, see
+  [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md))*;
+- changes it makes by hand, outside the onboarding portal, are only for early adopters
+  or emergencies, and are written down in `trust-anchor-changes.md` in this repository.
 
 ## 3. Participants and roles
 
@@ -105,11 +108,17 @@ rejected by every verifier)*.
 authority can exclude a participant that seriously or repeatedly breaks this rulebook
 (§11).
 
-**R4.3** On leaving or exclusion, the operator removes its issuer from the trusted issuers
-registry. Each provider removes it from its trusted issuers list and deletes its access
-policies within **5 working days** *(audited)*. **Gap:** this is manual today.
-contract-management does not revoke anything when an order is cancelled; to be
-checked (PLAN, phase 3).
+**R4.3** On leaving or exclusion, the operator removes the participant from the trust
+anchor (onboarding portal: registration out of `active`) *(enforced: from then on every
+verifier rejects its credentials)*. Within **5 working days**, its orders as a consumer
+are set to `cancelled`, which removes its entries from the providers' trusted issuers
+lists and its access policies *(enforced by contract-management once cancelled;
+audited)*. Details: [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md).
+
+**R4.5** A single purchase ends by setting its order to `cancelled`, either by the
+consumer or by the provider (for a breach, §11). Access to that offering is revoked
+automatically and nothing else is affected *(enforced)*. Orders do not expire on their
+own. Time-limited access needs a class with an end date.
 
 **R4.4** Leaving does not end obligations that apply to data already received, such as
 attribution, confidentiality or deletion (§7) *(contractual)*.
@@ -265,6 +274,8 @@ offerings, exclusion (R4.2).
 1. Final agreement with the Ajuntament on R6.4 (category by source).
 2. Liability between participants and the Ajuntament's requirements for its Lepus data
    (insurance, others) (R10.2, R5.3). Sensitive, in progress.
-3. Automatic revocation when an order ends or a participant leaves (R4.3): technical,
-   to be investigated.
-4. Trust-anchor change record for operator neutrality (R2.5): technical.
+3. ~~Automatic revocation (R4.3)~~: investigated 2026-11-11. It exists per order
+   (cancel the order) and per participant (deactivate in the portal). R4.3 and R4.5
+   are rewritten. End-to-end test pending.
+4. Trust-anchor change record (R2.5): proposal in
+   [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md), to implement.
