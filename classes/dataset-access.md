@@ -1,8 +1,11 @@
 # dataset-access
 
-Access for the buying organisation's machines to one NGSI-LD entity type.
+Access for the buying organisation's machines to one *shared* (not open) NGSI-LD
+entity type (rulebook §6).
 
-**Terms (draft):** _to be written with the rulebook._
+**Terms (rulebook §7):** use within CitCom activities only; do not share the raw data
+outside the data space; attribute the provider; delete the data on the provider's
+request when the order ends. All of these are contractual.
 
 | Term | Kind | How |
 |---|---|---|

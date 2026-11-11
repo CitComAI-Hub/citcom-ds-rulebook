@@ -27,23 +27,27 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (policy `otpnkghnxu`, VRAIN's waste-containers purchase).
 
 ## Phase 2: frame (needs the project, not only us)
-- [ ] Ask CitCom (coordinator, WP leads) whether a data-governance deliverable or
-      agreement already exists. If it does, the rulebook implements it. If not, we
-      write a proposal for them to approve.
-- [ ] Rulebook v0.1 (draft) from the DSSC Blueprint rulebook model: participants and
-      roles, onboarding, data and service categories, usage terms, liability,
-      changes. Short, and every rule marked *enforced*, *audited* or *contractual*.
-- [ ] Check legal constraints on our datasets: VLCi data is probably open data
-      already (Open Data Directive; mobility and environment are High-Value Datasets,
-      Reg. (EU) 2023/138). Restricting it needs a reason (added value: NGSI-LD,
-      SLA, verified identity), or a "registered open" class.
+- [x] Asked CitCom (2026-11-11): nobody works on data-space governance, so we write the
+      proposal.
+- [x] Rulebook v0.1 proposal ([rulebook/](rulebook/README.md)), based on the DSSC Blueprint
+      v2.0 governance and legal building blocks. Every rule is marked *enforced*,
+      *audited* or *contractual*.
+- [x] Legal check of our datasets on opendata.vlci.valencia.es: traffic state, traffic
+      intensity and air quality are open data (CC BY 4.0) → class `open-data`.
+      Container locations are open, fill levels are not → `dataset-access`.
+- [ ] Get the open decisions answered (end of the rulebook): governance authority,
+      notice period, fill-level category (Ajuntament), liability (legal services).
+- [ ] Adopt v0.1 → tag `rulebook-v0.1`.
 
 ## Phase 3: policy classes
-- [ ] Define 3 to 5 classes, each with its legal text and enforced constraints.
+- [x] First classes: `open-data`, `dataset-access`, `service-access` (rulebook §7).
+- [ ] More classes when an offer needs them, each with its legal text and enforced constraints.
       Candidates: `open-registered` (any member, read), `dataset-access` (buyer only,
       read), `service-access` (buyer's users, by role), `trial` (+ `odrl:dateTime`
       expiry), `restricted` (+ claim on organisation type or declared purpose
       via `ovc:leftOperand`).
+- [ ] Automatic revocation when an order ends or a participant leaves (rulebook R4.3):
+      check what contract-management does on order cancellation.
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
       a URL in the description) so a buyer sees what they agree to.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.

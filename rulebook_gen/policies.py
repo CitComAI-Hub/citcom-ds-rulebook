@@ -87,6 +87,9 @@ def service_access(provider, offer):
 
 
 CLASSES = {
+    # open-data and dataset-access enforce the same; they differ in their legal terms
+    # (rulebook §7): open data keeps its open licence, shared data is CitCom-only.
+    "open-data": dataset_access,
     "dataset-access": dataset_access,
     "service-access": service_access,
 }
