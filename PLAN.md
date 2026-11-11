@@ -81,7 +81,11 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       "citcom-ds-rulebook CI (read-only)" on dataspace-on-upv. First run green: the 6
       deployed offers match. `offers/` holds only what is published in
       dataspace-on-upv main.
-- [ ] `provider_offers.sh` reads the generated files (copy step or pinned version).
+- [ ] dataspace-on-upv takes the generated files: branch `feat/rulebook-offers` (PR pending).
+      `scripts/rulebook_offers.sh` / `make rulebook-offers[-check]` builds them with
+      rulebook_gen at the commit in `providers/RULEBOOK_REF` and copies them into
+      `providers/*/mrkt-offer/`. Changing a policy = change here, bump RULEBOOK_REF there,
+      regenerate, PR. Publishing is still `provider_offers.sh` on the server.
 - [ ] Same classes for the EDC data space: the Dataspace Protocol also carries ODRL.
 
 ## Open questions
