@@ -64,22 +64,24 @@ portal registrations. Removing one means calling the TIR/TIL management API by h
 
 ## Trust-anchor record (R2.5)
 
-What exists today:
+What existed before 2026-11-11:
 
 | Path that changes the trust anchor | Record kept |
 |---|---|
 | Portal: approve / deactivate / delete a registration | Current status + reason + `updatedAt`. Overwritten on every change, no admin name, and **the row is deleted** with the registration. Logs say only "by admin". |
 | Management API (TIL ingress, internal source ranges only, or port-forward) | None. |
 
-That is not enough for R2.5. Proposal:
+That was not enough for R2.5. All of the following is **deployed (2026-11-11)**:
 
-Implemented (audit log deployed 2026-11-11; offboarding script merged; portal history merged, waiting for a new portal image):
-- dataspace-on-upv `feat/trust-anchor-audit`: items 1 below (`modules/trust_anchor/audit.tf`,
-  `resources/audit.sql`), tested on Postgres 16.
-- On-Boarding-Portal `feat/registration-history`: item 2 (`RegistrationEvent`,
-  `GET /admin/registrations/:id/events`), tested on Postgres 16.
-- dataspace-on-upv `feat/participant-orders-script`: `scripts/participant_orders.sh`
-  for the offboarding cleanup (cancel a participant's orders).
+- Item 1: dataspace-on-upv PR #35 (`modules/trust_anchor/audit.tf`,
+  `resources/audit.sql`). Table `audit.trust_anchor_log` in `tildb`, 12 triggers on the
+  4 TIR/TIL tables, the `til` user has no access to it. Read it as `postgres` on
+  `postgres-0` (namespace `trust-anchor`):
+  `SELECT at, db_user, tbl, op, coalesce(new_row, old_row) FROM audit.trust_anchor_log ORDER BY id;`
+- Item 2: On-Boarding-Portal 1.6 (dataspace-on-upv PR #37). Table `registration_event`
+  in the portal database; `GET /api/admin/registrations/:id/events` (admin token).
+- Offboarding cleanup: dataspace-on-upv PR #36, `scripts/participant_orders.sh <did>`
+  (dry-run lists the orders, `--cancel` cancels them; see R4.3).
 
 1. **Database audit trigger** on the trust anchor's TIL database (`tildb`, used by both
    TIR and TIL). An append-only `audit_log` table, filled by a trigger on the issuer,

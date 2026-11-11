@@ -15,6 +15,11 @@ request when the order ends. All of these are contractual.
 | Only machine clients | enforced | `vc:type hasPart MachineCredential` |
 | Only this dataset | enforced | `http:path isInPath <path>` AND `ngsi-ld:entityType eq <type>` |
 | Read only | enforced | `odrl:read` (GET only) + `methods: ["GET"]` on the APISIX route |
+| Only entity reads | enforced | APISIX data routes serve only `/v1/entities` and `/v1/entities/*` (dataspace-on-upv PR #42); client `X-Stripped-Path` and tenant headers removed (PR #40) |
+
+**Published terms today:** the offers keep the terms published before the class
+existed. They do not yet include "within CitCom activities only" nor the deletion duty
+(rulebook open decision 5).
 
 Terms and conditions published with each offer: [`dataset-access.terms.md`](dataset-access.terms.md),
 filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.

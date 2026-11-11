@@ -13,6 +13,7 @@ only accepts the service terms: identify as a participant, read only.
 | Only machine clients | enforced | `vc:type hasPart MachineCredential` |
 | Only this dataset | enforced | `http:path isInPath <path>` AND `ngsi-ld:entityType eq <type>` |
 | Read only | enforced | `odrl:read` (GET only) + `methods: ["GET"]` on the APISIX route |
+| Only entity reads | enforced | APISIX data routes serve only `/v1/entities` and `/v1/entities/*` (dataspace-on-upv PR #42); client `X-Stripped-Path` and tenant headers removed (PR #40) |
 | Attribute the source | contractual | |
 
 Same enforcement as [dataset-access](dataset-access.md). The difference is legal: no

@@ -59,7 +59,7 @@ fixes a security problem.
 **R2.4** Policies follow the rulebook. The access policies deployed on the connectors
 are generated from this repository (`offers/` + `classes/`). A connector policy written
 by hand that this repository does not produce is a breach of §8 *(audited:
-`rulebook_gen check`)*.
+`rulebook_gen check`, run daily by this repository's CI against dataspace-on-upv)*.
 
 **R2.5** Operator neutrality. VRAIN is both the operator and a participant. As operator:
 - it adds or removes issuers in the trust anchor only to carry out a decision of the
@@ -270,6 +270,8 @@ offerings, exclusion (R4.2).
 | 2026-11-11 | Governance authority: the CitCom.ai consortium, under its consortium agreement. Operator: VRAIN, which controls the trust anchor. | R2.1, R2.2, R2.5, §5 |
 | 2026-11-11 | Notice period for rulebook changes: 30 days (security fixes exempt). | R2.3 |
 | 2026-11-11 | *Provisional:* data from public endpoints is Open; data from the provider's internal platform (Lepus) is Shared, within the data space only. | R6.4 |
+| 2026-11-11 | Offer terms are generated from the class templates, and every offering shows its class ("Policy class" term). Published the same day. | R5.2 |
+| 2026-11-11 | traffic-state is open data (CC BY 4.0): its terms no longer ban redistribution. The other Ajuntament offers keep their published terms until the Ajuntament agrees (open decision 5). | R6.2, R7 |
 
 ## Open decisions
 
@@ -279,5 +281,13 @@ offerings, exclusion (R4.2).
 3. ~~Automatic revocation (R4.3)~~: investigated 2026-11-11. It exists per order
    (cancel the order) and per participant (deactivate in the portal). R4.3 and R4.5
    are rewritten. Verified end to end on 2026-11-11.
-4. Trust-anchor change record (R2.5): proposal in
-   [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md), to implement.
+4. ~~Trust-anchor change record (R2.5)~~: deployed 2026-11-11 (audit log of the TIR/TIL
+   database, portal registration history), see
+   [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md).
+5. Terms of the `dataset-access` offers (Ajuntament data through Lepus): add the class's
+   "use within CitCom activities only" and "delete the data on the provider's request
+   when the order ends". Waiting for the Ajuntament, together with decisions 1 and 2.
+6. Terms of the `service-access` offers: the class says the inputs users give a service
+   are not reused for anything else; the published terms do not say it yet. Wording to
+   decide (in the Container Location Optimizer, layout names are visible to the other
+   users of the service).

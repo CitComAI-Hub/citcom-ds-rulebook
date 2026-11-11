@@ -40,7 +40,16 @@ For every completed order it creates the offer's ODRL policy in the provider's P
 
 A purchase therefore binds access to the buyer's organisation. A shared role
 such as `clearence1` does not give access to datasets the buyer did not buy.
-Still to confirm on the live PAP (plan, phase 1).
+Confirmed on the live PAP on 2026-11-11 (VRAIN's waste-containers purchase) and by the
+tests (`other_buyer`, `stranger`).
+
+`PAPAdapter` reads `odrl:permission` as one object, while the generated policy has a
+one-element list. It works because TMForum stores the spec in NGSI-LD and returns
+one-element arrays as plain values (the same happens to `allowedValues`: a single role
+comes back as a string). [`rulebook_gen/order.py`](../rulebook_gen/order.py) does the
+same unwrapping, so the tests load the policy the PAP really gets. A policy with two
+permissions would come back as a list and contract-management would reject it: keep
+one permission per policy.
 
 ## What it cannot enforce
 
@@ -89,11 +98,14 @@ What the generated Rego decides, per class, with odrl-pap 1.4.10 and OPA 1.11.0:
 - **service-access**: any method under the path, buyer only; same denials for
   path, party and credential.
 
-Gaps: OPA allows them, so the gateway has to block them:
+Gaps: OPA allows them, so the gateway has to block them (`GAP_` tests):
 
-| Case | Why OPA allows it | Where it must be fixed |
-|---|---|---|
-| `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus v1.3: send the URN's type to Orion |
-| `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus / route `uris` |
-| `GET …/types?type=T` | same fallback | route `uris` = `/v1/entities{,/*}` (fix/opa-input-hardening) |
-| header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (fix/opa-input-hardening) |
+| Case | Why OPA allows it | Blocked by | Status (2026-11-11) |
+|---|---|---|---|
+| `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus: query Orion with the URN's type | **open** (Lepus v1.3) |
+| `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus: same | **open** (Lepus v1.3) |
+| `GET …/types?type=T` | same fallback | data routes only serve `/v1/entities{,/*}` | closed, dataspace-on-upv PR #42 |
+| header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (and the tenant headers) | closed, dataspace-on-upv PR #39, #40 |
+
+The OPA-level tests keep asserting `allow` for these cases: OPA still allows them,
+whatever the gateway does. They fail, and must be revisited, if odrl-pap changes.
