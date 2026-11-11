@@ -75,3 +75,25 @@ Still to confirm on the live PAP (plan, phase 1).
    subset check), and a consumer's users hold all their roles. TIL entries themselves
    are per order (scoped), see [revocation-and-trust-anchor](revocation-and-trust-anchor.md).
    The generator derives this list automatically.
+
+## Tested (tests/opa, 2026-11-11)
+
+What the generated Rego decides, per class, with odrl-pap 1.4.10 and OPA 1.11.0:
+
+- **dataset-access / open-data**: GET by type (`?type=T`) or by id
+  (`urn:ngsi-ld:T:…`) under the offer's path is allowed to the buyer only. Denied:
+  every write (POST, PATCH, PUT, DELETE, batch delete, subscriptions), another
+  type, a type list (`?type=T,U`), no type, another path or a look-alike prefix
+  (`/lepus/ngsi-ldx`), another buyer of the same provider, a participant that bought
+  nothing, no token, another credential type, no role.
+- **service-access**: any method under the path, buyer only; same denials for
+  path, party and credential.
+
+Gaps: OPA allows them, so the gateway has to block them:
+
+| Case | Why OPA allows it | Where it must be fixed |
+|---|---|---|
+| `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus v1.3: send the URN's type to Orion |
+| `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus / route `uris` |
+| `GET …/types?type=T` | same fallback | route `uris` = `/v1/entities{,/*}` (fix/opa-input-hardening) |
+| header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (fix/opa-input-hardening) |

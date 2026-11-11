@@ -68,8 +68,13 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.
 
 ## Phase 4: make it the only path
-- [ ] `opa test` the generated Rego (via odrl-pap in CI, or its rego libs + fixtures):
-      for each class, requests that must pass and requests that must fail.
+- [x] `opa test` the generated Rego (2026-11-11, `tests/opa/run.sh`): a throwaway
+      odrl-pap 1.4.10 gets every offer as contract-management sends it (one buyer per
+      offer), its bundles are tested with OPA 1.11.0. 125 cases (92 townhall_vlc, 33
+      vrain_upv) pass. Mutation checks: `odrl:use` in dataset-access breaks the 24
+      write cases; dropping the `vc:currentParty` binding breaks the 14 other-buyer and
+      stranger cases. `GAP_` tests document what OPA allows and the gateway must block
+      (F1 client-chosen type, F2 `x-stripped-path`; dataspace-on-upv AUDIT-fable.md).
 - [ ] CI: validate offers, regenerate, fail if dataspace-on-upv drifts.
 - [ ] `provider_offers.sh` reads the generated files (copy step or pinned version).
 - [ ] Same classes for the EDC data space: the Dataspace Protocol also carries ODRL.

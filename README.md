@@ -22,7 +22,13 @@ Python ≥ 3.11, standard library only.
 python -m rulebook_gen build             # → build/<provider>/<offer>.credentials.json
 python -m rulebook_gen check             # compare with ../dataspace-on-upv (or --ds-repo PATH)
 python -m unittest discover -s tests -t .
+tests/opa/run.sh                         # opa test of every offer's Rego (needs Docker)
 ```
+
+`tests/opa/run.sh` starts a throwaway odrl-pap and postgres, loads each provider's
+offers as contract-management would after one purchase each, and runs
+`opa test` on the bundle that the connector's OPA would download. The expected
+decisions per class are in [`tests/opa/cases.py`](tests/opa/cases.py).
 
 ## How a policy reaches a request
 
