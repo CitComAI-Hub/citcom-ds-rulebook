@@ -75,7 +75,11 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       write cases; dropping the `vc:currentParty` binding breaks the 14 other-buyer and
       stranger cases. `GAP_` tests document what OPA allows and the gateway must block
       (F1 client-chosen type, F2 `x-stripped-path`; dataspace-on-upv AUDIT-fable.md).
-- [ ] CI: validate offers, regenerate, fail if dataspace-on-upv drifts.
+- [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
+      `tests/opa/run.sh`. Green.
+- [ ] Drift job: needs secret `DS_DEPLOY_KEY` (read-only deploy key of the private
+      dataspace-on-upv); until then it only warns. Expected to fail until the tourism
+      offer reaches dataspace-on-upv main (`tourism_user` in VRAIN's verifier lists).
 - [ ] `provider_offers.sh` reads the generated files (copy step or pinned version).
 - [ ] Same classes for the EDC data space: the Dataspace Protocol also carries ODRL.
 
