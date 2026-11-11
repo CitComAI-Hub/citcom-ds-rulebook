@@ -40,7 +40,7 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       public endpoint = open, Lepus = shared).
 - [ ] Still open: final R6.4 with the Ajuntament; liability and the Ajuntament's
       requirements (insurance) for Lepus data. Sensitive, in progress.
-- [ ] Trust-anchor change record (R2.5): who added or removed which issuer, when, why.
+- [ ] Trust-anchor change record (R2.5): see phase 3.
 - [ ] Adopt a version → tag `rulebook-vX.Y`.
 
 ## Phase 3: policy classes
@@ -53,9 +53,10 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (portal deactivation removes it from the trust anchor).
 - [ ] End-to-end test: throwaway order completed → cancelled; TIL scope and PAP
       policy gone, request → 403.
-- [ ] Script to cancel all orders of a participant (offboarding cleanup, R4.3).
-- [ ] Trust-anchor record (R2.5): audit trigger on tildb (dataspace-on-upv
-      trust_anchor) + registration history in On-Boarding-Portal.
+- [x] Script to cancel a participant's orders: dataspace-on-upv `feat/participant-orders-script` (PR).
+- [ ] Trust-anchor record (R2.5): audit trigger (dataspace-on-upv
+      `feat/trust-anchor-audit`) + registration history (On-Boarding-Portal
+      `feat/registration-history`). Written and tested; PRs, then deploy.
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
       a URL in the description) so a buyer sees what they agree to.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.

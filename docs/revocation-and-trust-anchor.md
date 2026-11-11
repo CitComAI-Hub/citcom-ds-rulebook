@@ -15,6 +15,12 @@ contract-management handles every TMF622 order event:
 | State changes to **anything else** (`cancelled`, `failed`, `held`, `inProgress`…) | Revokes: deletes the TIL credentials of that order scope (`deleteCredentialsByScope`), deletes the order's policy from the PAP, and sets the agreement to `cancelled`. |
 | Order deleted | Same revocation. |
 
+Checked in the connectors' TIL databases (2026-11-11): every purchase row has
+`scope = <order id>`, e.g. `did:web:vrain… | MachineCredential |
+urn:ngsi-ld:product-order:c54e53db…` in townhall-vlc. Each connector's own entries have
+no scope, so a revocation never touches them. (The trust anchor runs TIL 0.8.0, which
+has no scopes, but it is not involved in purchases.)
+
 So revoking a purchase is **already automatic**: setting the order to `cancelled`
 is enough. It only touches that order. Other purchases by the same buyer keep their
 own TIL scope and policy. The live TILs confirm it. In vrain's TIL, the Ajuntament has two
@@ -23,7 +29,7 @@ separate ServiceCredential entries, one per order (MIAIS and container location)
 Seen before (2026-11-05): moving an order `inProgress → completed` re-ran it cleanly and
 removed the first policy, which is the PAP half of this.
 
-Still to verify end to end: a throwaway order taken to `completed` and then to
+Still to verify end to end (script ready, needs to be run by hand because it writes to production): a throwaway order taken to `completed` and then to
 `cancelled` (TIL entry and PAP policy gone, request → 403). Not done yet, because it
 writes to production.
 
@@ -58,6 +64,14 @@ What exists today:
 | Management API (TIL ingress, internal source ranges only, or port-forward) | None. |
 
 That is not enough for R2.5. Proposal:
+
+Implemented (pending review/deploy):
+- dataspace-on-upv `feat/trust-anchor-audit`: items 1 below (`modules/trust_anchor/audit.tf`,
+  `resources/audit.sql`), tested on Postgres 16.
+- On-Boarding-Portal `feat/registration-history`: item 2 (`RegistrationEvent`,
+  `GET /admin/registrations/:id/events`), tested on Postgres 16.
+- dataspace-on-upv `feat/participant-orders-script`: `scripts/participant_orders.sh`
+  for the offboarding cleanup (cancel a participant's orders).
 
 1. **Database audit trigger** on the trust anchor's TIL database (`tildb`, used by both
    TIR and TIL). An append-only `audit_log` table, filled by a trigger on the issuer,
