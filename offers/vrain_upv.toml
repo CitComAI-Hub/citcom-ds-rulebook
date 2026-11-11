@@ -1,0 +1,26 @@
+# Offers of the VRAIN (UPV) connector: AI services used by people.
+
+[provider]
+id = "vrain_upv"
+host = "vrain.citcom-vrain-dataspace.eu"
+
+[[offer]]
+name = "waste-collection"
+class = "service-access"
+path = "/waste-collection"
+credential = "ServiceCredential"
+role = "waste_collection_user"
+
+[[offer]]
+name = "container-location"
+class = "service-access"
+path = "/container-location"
+credential = "ServiceCredential"
+role = "container_location_user"
+
+[[offer]]
+name = "tourism"
+class = "service-access"
+path = "/tourism"
+credential = "ServiceCredential"
+role = "tourism_user"
