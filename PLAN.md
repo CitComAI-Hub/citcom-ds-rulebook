@@ -59,8 +59,10 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       no access. Read: `SELECT at, db_user, tbl, op, coalesce(new_row, old_row)
       FROM audit.trust_anchor_log ORDER BY id;` as postgres on postgres-0.
 - [x] Offboarding script merged (PR #36): `scripts/participant_orders.sh`.
-- [ ] Portal registration history (On-Boarding-Portal `feat/registration-history`,
-      merged): needs a new portal image + tag bump in dataspace-on-upv.
+- [x] Portal registration history DEPLOYED 2026-11-11: On-Boarding-Portal 1.6
+      (dataspace-on-upv PR #37). Table `registration_event` in the portal DB (who
+      approved, deactivated or deleted each registration, and when); read it with
+      `GET /api/admin/registrations/:id/events` (admin token).
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
       a URL in the description) so a buyer sees what they agree to.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.
