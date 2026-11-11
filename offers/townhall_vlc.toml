@@ -1,0 +1,38 @@
+# Offers of the Ajuntament de València connector.
+# The class says which rulebook terms apply; see classes/<class>.md.
+
+[provider]
+id = "townhall_vlc"
+host = "townhall-vlc.citcom-vrain-dataspace.eu"
+
+[[offer]]
+name = "waste-containers"
+class = "dataset-access"
+path = "/lepus/ngsi-ld"
+entity_type = "WasteContainer"
+credential = "MachineCredential"
+role = "clearence1"
+
+[[offer]]
+name = "air-quality"
+class = "dataset-access"
+path = "/lepus/ngsi-ld"
+entity_type = "AirQualityObserved"
+credential = "MachineCredential"
+role = "clearence1"
+
+[[offer]]
+name = "traffic-flow"
+class = "dataset-access"
+path = "/lepus/ngsi-ld"
+entity_type = "TrafficFlowObserved"
+credential = "MachineCredential"
+role = "clearence1"
+
+[[offer]]
+name = "traffic-state"
+class = "dataset-access"
+path = "/ngsi-ld"
+entity_type = "TrafficState"
+credential = "MachineCredential"
+role = "clearence1"
