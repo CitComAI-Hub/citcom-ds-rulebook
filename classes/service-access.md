@@ -2,7 +2,8 @@
 
 Access for the buying organisation's people to a web or API service.
 
-**Terms (draft):** _to be written with the rulebook._
+**Terms (rulebook §7):** the service's terms of use, in its offering. Inputs users give
+the service are not reused for anything else (contractual).
 
 | Term | Kind | How |
 |---|---|---|

@@ -14,6 +14,7 @@ from .policies import CLASSES, characteristics
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 REQUIRED = {
+    "open-data": {"name", "path", "entity_type", "credential", "role"},
     "dataset-access": {"name", "path", "entity_type", "credential", "role"},
     "service-access": {"name", "path", "credential", "role"},
 }

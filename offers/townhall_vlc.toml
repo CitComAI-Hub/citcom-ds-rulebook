@@ -1,5 +1,7 @@
 # Offers of the Ajuntament de València connector.
 # The class says which rulebook terms apply; see classes/<class>.md.
+# Categories checked on opendata.vlci.valencia.es on 2026-11-11 (rulebook §6):
+# traffic and air quality are open (CC BY 4.0); container fill levels are not.
 
 [provider]
 id = "townhall_vlc"
@@ -15,7 +17,7 @@ role = "clearence1"
 
 [[offer]]
 name = "air-quality"
-class = "dataset-access"
+class = "open-data"
 path = "/lepus/ngsi-ld"
 entity_type = "AirQualityObserved"
 credential = "MachineCredential"
@@ -23,7 +25,7 @@ role = "clearence1"
 
 [[offer]]
 name = "traffic-flow"
-class = "dataset-access"
+class = "open-data"
 path = "/lepus/ngsi-ld"
 entity_type = "TrafficFlowObserved"
 credential = "MachineCredential"
@@ -31,7 +33,7 @@ role = "clearence1"
 
 [[offer]]
 name = "traffic-state"
-class = "dataset-access"
+class = "open-data"
 path = "/ngsi-ld"
 entity_type = "TrafficState"
 credential = "MachineCredential"
