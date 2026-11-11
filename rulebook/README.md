@@ -1,8 +1,9 @@
-# CitCom data space rulebook — v0.1 (proposal)
+# CitCom data space rulebook — v0.2 (draft)
 
-**Status:** proposal written by the VRAIN team (UPV) on 2026-11-11. Nobody in CitCom
-has approved it yet. Nothing here binds anyone until the governance authority (§2)
-adopts it. Items marked **DECISION** need someone with authority to decide them.
+**Status:** draft written by the VRAIN team (UPV). The first decisions were taken on
+2026-11-11 and are listed in the [decisions log](#decisions-log). The rulebook is not
+binding until the governance authority (R2.1) adopts a tagged version. Items marked
+**DECISION** are still open.
 
 The structure follows the DSSC Blueprint v2.0: governance (organisational form,
 participant management) and legal (regulatory compliance, contractual framework).
@@ -24,8 +25,11 @@ that enforces it.
 ## 1. Purpose and scope
 
 **R1.1** The CitCom data space lets cities, research centres and companies taking part
-in CitCom.ai share urban data and AI services in a trusted and controlled way. Today
-that means the València data space: Ajuntament de València and VRAIN (UPV).
+in CitCom.ai share urban data and AI services in a trusted and controlled way. It is
+open to any organisation that meets §4. The first participants (early adopters) are
+the Ajuntament de València and VRAIN (UPV), but no rule depends on who they are: they
+have the same rights and duties as any later participant, except for VRAIN's role as
+operator (R2.2, R2.5).
 
 **R1.2** This rulebook covers the participants, the data and services offered through the
 data space connectors and the CitCom marketplace, and the terms under which they are
@@ -37,28 +41,38 @@ promise production-grade availability (§10).
 
 ## 2. Governance
 
-**R2.1** The **governance authority** adopts and changes this rulebook, admits and
-excludes participants, and settles disputes. **DECISION:** who it is. Proposal: the
-CitCom.ai partners operating the data space, under the existing consortium agreement,
-with no new legal entity. That is a cooperation-agreement form in DSSC terms.
+**R2.1** The **governance authority** is the **CitCom.ai consortium**, acting under its
+consortium agreement, with no new legal entity (a cooperation agreement in DSSC terms).
+It adopts and changes this rulebook, admits and excludes participants, and settles
+disputes.
 
 **R2.2** The **operator** runs the shared services: trust anchor (trusted issuers
 registry), onboarding portal, marketplace and documentation. It acts on behalf of the
-governance authority. Today: VRAIN (UPV).
+governance authority. The operator is **VRAIN (UPV)**. In practice VRAIN controls the
+trust anchor, so it decides technically who can take part (R2.5 limits that power).
 
 **R2.3** Changes: a change to this rulebook is a pull request to this repository,
 approved by the governance authority. Each adopted version is tagged (`rulebook-vX.Y`)
 and announced to participants at least **30 days** before it takes effect, unless it
-fixes a security problem. **DECISION:** notice period.
+fixes a security problem.
 
 **R2.4** Policies follow the rulebook. The access policies deployed on the connectors
 are generated from this repository (`offers/` + `classes/`). A connector policy written
 by hand that this repository does not produce is a breach of §8 *(audited:
 `rulebook_gen check`)*.
 
+**R2.5** Operator neutrality. VRAIN is both the operator and a participant. As operator:
+- it adds or removes issuers in the trust anchor only to carry out a decision of the
+  governance authority, or R4.1 / R4.3 / R9.1;
+- it treats every participant the same way, including itself;
+- it does not use its position to access other participants' data or services;
+- it keeps a record of every change to the trust anchor (who, when, why) and shares it
+  with the governance authority on request *(audited: record still to be set up, see
+  PLAN)*.
+
 ## 3. Participants and roles
 
-| Role | Does | Example |
+| Role | Does | Example (early adopters) |
 |---|---|---|
 | **Data provider** | Publishes datasets through its connector and offers them in the marketplace | Ajuntament de València |
 | **Service provider** | Publishes services (web apps, APIs, AI models) through its connector | VRAIN (MIAIS, container location, tourism) |
@@ -106,10 +120,10 @@ Following the DSSC contractual framework:
 
 | DSSC category | In this data space |
 |---|---|
-| Founding agreement | **DECISION** (R2.1). Proposal: the CitCom.ai consortium agreement. |
+| Founding agreement | The CitCom.ai consortium agreement (R2.1). |
 | Accession agreement | Acceptance of this rulebook at onboarding (R4.1). |
 | General terms and conditions | This rulebook. |
-| Data product contract | The marketplace **order** of an offering. Its terms are those of the offering's policy class (§7) plus anything the offering adds in its description. |
+| Data product contract | The marketplace **order** of an offering. Its terms are those of the offering's policy class (§7) plus the provider's additional requirements (R5.3). |
 | Licence | Fixed by the policy class. Providers choose a class and do not write their own (R7.1). |
 
 **R5.1** An order is completed only by the provider (or, for free offers, automatically).
@@ -119,6 +133,16 @@ to the consumer's DID)*.
 
 **R5.2** Every offering states its policy class and links to it from its description
 *(audited)*.
+
+**R5.3** A provider can set **additional requirements** for an offering, for example
+civil liability insurance, a signed agreement or a declared purpose of use. They must:
+- be stated in the offering before anyone acquires it;
+- not contradict this rulebook;
+- apply equally to every consumer of that offering.
+
+The provider checks them before completing the order *(contractual)*. Requirements
+that can be expressed as a credential claim (e.g. an insurance attestation) can later
+be enforced with a dedicated class (`ovc:leftOperand`, see PLAN).
 
 ## 6. Data categories
 
@@ -139,15 +163,25 @@ identify themselves and accept the service terms of the connector *(contractual)
 **R6.3** A provider is responsible for having the right to offer each dataset, and for
 its category being correct *(contractual)*.
 
-Current datasets, checked against the VLCi open data portal (opendata.vlci.valencia.es)
-on 2026-11-11:
+**R6.4** The category depends on **where the data comes from**, not on whether a similar
+dataset exists elsewhere:
+- data the data space takes from a provider's **public endpoint** is **Open**;
+- data it takes from a provider's **internal platform** is **Shared**. For the
+  Ajuntament de València that is the VLCi platform, reached through Lepus. A similar
+  dataset may be on the open data portal, but this feed (frequency, attributes,
+  history) is not the public one.
 
-| Offer | Source on the portal | Category |
+*Provisional:* the Ajuntament and VRAIN are still agreeing on this. Until they do, R6.4
+applies.
+
+Current datasets (2026-11-11):
+
+| Offer | Source | Category |
 |---|---|---|
-| traffic-state | `estat-transit-temps-real` (CC BY 4.0) | Open |
-| traffic-flow | `intensitat-transit-trams` / traffic measurement points (CC BY 4.0) | Open |
-| air-quality | `estacions-contaminacio-atmosferiques` (CC BY 4.0) | Open |
-| waste-containers | Container locations are open (CC BY 4.0). Fill levels are **not** on the portal. | Shared (**DECISION**, Ajuntament) |
+| traffic-state | Public endpoint (open data `estat-transit-temps-real`, CC BY 4.0), loaded by the provider's ingestion | Open |
+| traffic-flow | VLCi platform, through Lepus | Shared |
+| air-quality | VLCi platform, through Lepus | Shared |
+| waste-containers | VLCi platform, through Lepus | Shared |
 
 ## 7. Usage terms (policy classes)
 
@@ -201,9 +235,12 @@ policies bind to the issuing organisation)*.
 availability or quality guarantees, because this is a pilot. An offering can promise
 more in its description.
 
-**R10.2** No participant is liable to another for damages caused by unavailability or by
-errors in the data, except for wilful misconduct or gross negligence. **DECISION:** to
-be checked by the partners' legal services.
+**R10.2** **DECISION (sensitive, in progress):** liability between participants is not
+settled. The Ajuntament, as a provider like any other, is likely to ask consumers of
+its Lepus data for civil liability insurance and other conditions (R5.3). The general
+clause is being worked out with the Ajuntament and the partners' legal services. Until
+then there is no general liability clause: R10.1 and each offering's additional
+requirements apply.
 
 ## 11. Breaches and disputes
 
@@ -215,11 +252,19 @@ offerings, exclusion (R4.2).
 
 ---
 
-## Open decisions (summary)
+## Decisions log
 
-1. Governance authority and founding agreement (R2.1, §5).
-2. Notice period for changes (R2.3).
-3. Category of the waste-container fill levels (§6). The Ajuntament decides.
-4. Liability clause (R10.2): legal services.
-5. Automatic revocation when an order ends or a participant leaves (R4.3): technical,
+| Date | Decision | Rules |
+|---|---|---|
+| 2026-11-11 | Governance authority: the CitCom.ai consortium, under its consortium agreement. Operator: VRAIN, which controls the trust anchor. | R2.1, R2.2, R2.5, §5 |
+| 2026-11-11 | Notice period for rulebook changes: 30 days (security fixes exempt). | R2.3 |
+| 2026-11-11 | *Provisional:* data from public endpoints is Open; data from the provider's internal platform (Lepus) is Shared, within the data space only. | R6.4 |
+
+## Open decisions
+
+1. Final agreement with the Ajuntament on R6.4 (category by source).
+2. Liability between participants and the Ajuntament's requirements for its Lepus data
+   (insurance, others) (R10.2, R5.3). Sensitive, in progress.
+3. Automatic revocation when an order ends or a participant leaves (R4.3): technical,
    to be investigated.
+4. Trust-anchor change record for operator neutrality (R2.5): technical.

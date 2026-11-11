@@ -35,9 +35,13 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [x] Legal check of our datasets on opendata.vlci.valencia.es: traffic state, traffic
       intensity and air quality are open data (CC BY 4.0) → class `open-data`.
       Container locations are open, fill levels are not → `dataset-access`.
-- [ ] Get the open decisions answered (end of the rulebook): governance authority,
-      notice period, fill-level category (Ajuntament), liability (legal services).
-- [ ] Adopt v0.1 → tag `rulebook-v0.1`.
+- [x] Decisions 2026-11-11: consortium as governance authority, VRAIN as operator
+      (controls the trust anchor), 30-day notice, category by source (provisional:
+      public endpoint = open, Lepus = shared).
+- [ ] Still open: final R6.4 with the Ajuntament; liability and the Ajuntament's
+      requirements (insurance) for Lepus data. Sensitive, in progress.
+- [ ] Trust-anchor change record (R2.5): who added or removed which issuer, when, why.
+- [ ] Adopt a version → tag `rulebook-vX.Y`.
 
 ## Phase 3: policy classes
 - [x] First classes: `open-data`, `dataset-access`, `service-access` (rulebook §7).

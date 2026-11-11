@@ -1,6 +1,7 @@
 # open-data
 
-Access through the data space to a dataset that is already open data (rulebook §6, R6.2).
+Access through the data space to a dataset taken from a provider's public endpoint
+(rulebook R6.2, R6.4). Today: traffic-state.
 
 **Terms:** the licence of the source (for VLCi data, CC BY 4.0: attribute
 "Ajuntament de València"). The data space adds no usage restrictions. The consumer

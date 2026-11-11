@@ -1,7 +1,9 @@
 # dataset-access
 
 Access for the buying organisation's machines to one *shared* (not open) NGSI-LD
-entity type (rulebook §6).
+entity type (rulebook R6.4: data from the provider's internal platform, e.g. VLCi
+through Lepus). Today: waste-containers, air-quality, traffic-flow. The provider may
+add requirements such as liability insurance (R5.3).
 
 **Terms (rulebook §7):** use within CitCom activities only; do not share the raw data
 outside the data space; attribute the provider; delete the data on the provider's
