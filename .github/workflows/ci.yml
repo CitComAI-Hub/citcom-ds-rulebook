@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # dataspace-on-upv changes do not trigger this repo: re-check the drift daily.
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policies:
+    name: generator + opa test of every class
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python -m unittest discover -s tests -t . -v
+      - name: Offers are valid and build
+        run: python -m rulebook_gen build --out build
+      - name: opa test (odrl-pap 1.4.10, OPA 1.11.0)
+        run: tests/opa/run.sh
+
+  drift:
+    name: dataspace-on-upv uses the generated policies
+    runs-on: ubuntu-24.04
+    env:
+      DS_DEPLOY_KEY: ${{ secrets.DS_DEPLOY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip without access to dataspace-on-upv
+        if: env.DS_DEPLOY_KEY == ''
+        run: echo "::warning::secret DS_DEPLOY_KEY not set (read-only deploy key of CitComAI-Hub/dataspace-on-upv), drift not checked"
+      - uses: actions/checkout@v4
+        if: env.DS_DEPLOY_KEY != ''
+        with:
+          repository: CitComAI-Hub/dataspace-on-upv
+          ref: main
+          ssh-key: ${{ secrets.DS_DEPLOY_KEY }}
+          path: dataspace-on-upv
+          sparse-checkout: providers
+      - uses: actions/setup-python@v5
+        if: env.DS_DEPLOY_KEY != ''
+        with:
+          python-version: "3.12"
+      - name: rulebook_gen check
+        if: env.DS_DEPLOY_KEY != ''
+        run: python -m rulebook_gen check --ds-repo dataspace-on-upv
