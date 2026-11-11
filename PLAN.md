@@ -77,9 +77,10 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (F1 client-chosen type, F2 `x-stripped-path`; dataspace-on-upv AUDIT-fable.md).
 - [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
       `tests/opa/run.sh`. Green.
-- [ ] Drift job: needs secret `DS_DEPLOY_KEY` (read-only deploy key of the private
-      dataspace-on-upv); until then it only warns. `offers/` holds only what is
-      published in dataspace-on-upv main (tourism removed: WIP, not deployed).
+- [x] Drift job ACTIVE (2026-11-11): secret `DS_DEPLOY_KEY` = read-only deploy key
+      "citcom-ds-rulebook CI (read-only)" on dataspace-on-upv. First run green: the 6
+      deployed offers match. `offers/` holds only what is published in
+      dataspace-on-upv main.
 - [ ] `provider_offers.sh` reads the generated files (copy step or pinned version).
 - [ ] Same classes for the EDC data space: the Dataspace Protocol also carries ODRL.
 
