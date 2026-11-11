@@ -90,8 +90,8 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       (F1 client-chosen type, F2 `x-stripped-path`; dataspace-on-upv AUDIT-fable.md).
       Gateway, deployed 2026-11-11: F2 closed (PR #39, #40: `x-stripped-path` and tenant
       headers removed); data routes only serve `/v1/entities{,/*}` (PR #42), which
-      closes `/types?type=`. Still open: the two F1 cases under `/v1/entities/…`
-      (forged URN, `/attrs/…?type=`) → Lepus v1.3.
+      closes `/types?type=`. The two F1 cases under `/v1/entities/…` (forged URN,
+      `/attrs/…?type=`) closed by Lepus v1.3 (PR #45, deployed 2026-11-11).
 - [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
       `tests/opa/run.sh`. Green.
 - [x] Drift job ACTIVE (2026-11-11): secret `DS_DEPLOY_KEY` = read-only deploy key
