@@ -276,6 +276,6 @@ offerings, exclusion (R4.2).
    (insurance, others) (R10.2, R5.3). Sensitive, in progress.
 3. ~~Automatic revocation (R4.3)~~: investigated 2026-11-11. It exists per order
    (cancel the order) and per participant (deactivate in the portal). R4.3 and R4.5
-   are rewritten. End-to-end test pending.
+   are rewritten. Verified end to end on 2026-11-11.
 4. Trust-anchor change record (R2.5): proposal in
    [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md), to implement.

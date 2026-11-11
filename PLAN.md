@@ -51,8 +51,8 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [x] Revocation investigated (2026-11-11, docs/revocation-and-trust-anchor.md):
       automatic per order (any state other than completed) and per participant
       (portal deactivation removes it from the trust anchor).
-- [ ] End-to-end test: throwaway order completed → cancelled; TIL scope and PAP
-      policy gone, request → 403.
+- [x] End-to-end test (2026-11-11): order completed → access granted (read only);
+      cancelled → TIL scope and PAP policy gone, OPA denies; other purchases untouched.
 - [x] Script to cancel a participant's orders: dataspace-on-upv `feat/participant-orders-script` (PR).
 - [ ] Trust-anchor record (R2.5): audit trigger (dataspace-on-upv
       `feat/trust-anchor-audit`) + registration history (On-Boarding-Portal

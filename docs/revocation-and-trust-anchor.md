@@ -29,9 +29,17 @@ separate ServiceCredential entries, one per order (MIAIS and container location)
 Seen before (2026-11-05): moving an order `inProgress → completed` re-ran it cleanly and
 removed the first policy, which is the PAP half of this.
 
-Still to verify end to end (script ready, needs to be run by hand because it writes to production): a throwaway order taken to `completed` and then to
-`cancelled` (TIL entry and PAP policy gone, request → 403). Not done yet, because it
-writes to production.
+**Verified end to end on 2026-11-11** (order `urn:ngsi-ld:product-order:351420ee…`, left
+`cancelled` as a record). VRAIN ordered townhall-vlc's traffic-state:
+
+| Step | PAP policies | VRAIN entries in the TIL | OPA, GET TrafficState as VRAIN | POST |
+|---|---|---|---|---|
+| Before | `otpnkghnxu` (waste-containers) | 1 | deny | deny |
+| Order `completed` | + `qncdmxluov` | 2 | **allow** | deny (`odrl:read`) |
+| Order `cancelled` | `otpnkghnxu` | 1 | deny | deny |
+
+The other purchase (waste-containers) was not touched. Note for TMF622: create the
+order **without** `state` (the create schema rejects it), then PATCH the state.
 
 Missing: there is no expiry. An order stays active until someone changes its state. For
 time-limited access, use an `odrl:dateTime` constraint (class `trial`, PLAN phase 3)
