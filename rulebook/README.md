@@ -239,6 +239,29 @@ not allow more than the classes allow (for example, no write methods on data rou
 **R8.4** Access policies are produced by this repository and deployed through the
 marketplace (R2.4).
 
+**R8.5** Each offering defines precisely the data it covers: the entity type and what
+delimits it within the provider's systems (source, area, sub-collection). The access an
+offering grants must not reach data outside that definition, **whatever the consumer
+puts in the request** (query parameters, headers, entity ids, paths). Data that is not
+offered must not be reachable through the data space, and new data the provider's
+systems start publishing is not served until it is assigned to an offering
+*(audited: each connector shows how it meets this in its
+[implementation profile](../docs/implementation-profiles.md))*.
+
+**R8.6** Minimum security baseline for every connector *(audited: operator's review and
+conformance checks)*:
+- data routes are read only and expose only the endpoints the offerings need (R7.3,
+  R8.3);
+- an access decision never relies on a value the consumer controls (a header, a
+  parameter, the type written in an id) unless the system behind the gateway enforces
+  that same value; values the gateway or the policy engine trust are removed from
+  incoming requests;
+- no test or default accounts and no shared default secrets;
+- components at versions without known exploitable vulnerabilities.
+
+A participant that does not use the operator's connector configuration shows how it
+meets the baseline before its offerings are published.
+
 ## 9. Security and incidents
 
 **R9.1** A participant that finds a security incident or a vulnerability affecting the data
@@ -247,6 +270,11 @@ The operator can suspend any access while it is handled.
 
 **R9.2** Credentials and tokens are not shared between organisations *(partly enforced:
 policies bind to the issuing organisation)*.
+
+**R9.3** When the operator learns of a vulnerability in a component that several
+connectors share, it tells every participant that runs it, with the fix or the
+mitigation, and reports it privately to the component's maintainers. It does not
+publish exploit details before a fix is available *(contractual)*.
 
 ## 10. Availability and liability
 
