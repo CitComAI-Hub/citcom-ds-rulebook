@@ -63,7 +63,7 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (dataspace-on-upv PR #37). Table `registration_event` in the portal DB (who
       approved, deactivated or deleted each registration, and when); read it with
       `GET /api/admin/registrations/:id/events` (admin token).
-- [ ] Terms generated from the rulebook (branch feat/offer-terms): `classes/<class>.terms.md`
+- [x] Terms generated from the rulebook, PUBLISHED 2026-11-11 (dataspace-on-upv PR #43, `provider_offers.sh --update`): `classes/<class>.terms.md`
       + `[provider.terms]`/`[offer.terms]` → `<offer>.terms.md` (front matter: class,
       class_url, rulebook commit). Published as the "License" term + a "Policy class" term
       (R5.2). Same text as today for 5 offers; traffic-state (open-data) now CC BY 4.0
