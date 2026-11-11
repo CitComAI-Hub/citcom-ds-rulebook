@@ -40,7 +40,7 @@ def _all_of(constraints):
     return {"@type": "odrl:LogicalConstraint", "odrl:and": constraints}
 
 
-def _odrl_policy(provider, offer, context, target_constraints):
+def _odrl_policy(provider, offer, context, action, target_constraints):
     uid = f"https://{provider['host']}/policy/{offer['name']}-access"
     return {
         "@context": context,
@@ -50,7 +50,7 @@ def _odrl_policy(provider, offer, context, target_constraints):
         "odrl:permission": [
             {
                 "odrl:assigner": f"did:web:{provider['host']}",
-                "odrl:action": "odrl:use",
+                "odrl:action": action,
                 "odrl:target": {
                     "@type": "odrl:AssetCollection",
                     "odrl:source": "urn:asset",
@@ -72,18 +72,18 @@ def _odrl_policy(provider, offer, context, target_constraints):
 
 
 def dataset_access(provider, offer):
-    """Read access to one NGSI-LD entity type under one path prefix."""
+    """Read-only (GET) access to one NGSI-LD entity type under one path prefix."""
     targets = [
         _constraint("http:path", "http:isInPath", offer["path"]),
         _constraint("ngsi-ld:entityType", "odrl:eq", offer["entity_type"]),
     ]
-    return _odrl_policy(provider, offer, CONTEXT | NGSI_LD_CONTEXT, targets)
+    return _odrl_policy(provider, offer, CONTEXT | NGSI_LD_CONTEXT, "odrl:read", targets)
 
 
 def service_access(provider, offer):
-    """Access to a web/API service published under one path prefix."""
+    """Access to a web/API service under one path prefix (any method: web apps POST)."""
     targets = [_constraint("http:path", "http:isInPath", offer["path"])]
-    return _odrl_policy(provider, offer, CONTEXT, targets)
+    return _odrl_policy(provider, offer, CONTEXT, "odrl:use", targets)
 
 
 CLASSES = {

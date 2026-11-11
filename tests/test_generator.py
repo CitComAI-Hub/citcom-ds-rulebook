@@ -1,5 +1,3 @@
-import json
-import pathlib
 import unittest
 
 from rulebook_gen.__main__ import ROOT, generate
@@ -22,19 +20,16 @@ class GeneratorTest(unittest.TestCase):
             {"http:path": "/lepus/ngsi-ld", "ngsi-ld:entityType": "AirQualityObserved"},
         )
 
+    def test_datasets_are_read_only_and_services_are_not(self):
+        def action(key):
+            return self.out[key][1]["productSpecCharacteristicValue"][0]["value"][0]["odrl:permission"][0]["odrl:action"]
+
+        self.assertEqual(action(("townhall_vlc", "traffic-state")), "odrl:read")
+        self.assertEqual(action(("vrain_upv", "tourism")), "odrl:use")
+
     def test_policy_ids_have_no_collisions(self):
         uids = [c[1]["productSpecCharacteristicValue"][0]["value"][0]["odrl:uid"] for c in self.out.values()]
         self.assertEqual(len(uids), len(set(uids)))
-
-    @unittest.skipUnless((ROOT.parent / "dataspace-on-upv/providers").is_dir(), "dataspace-on-upv not checked out next to this repo")
-    def test_reproduces_dataspace_on_upv(self):
-        from rulebook_gen.__main__ import _normalized
-
-        ds = ROOT.parent / "dataspace-on-upv/providers"
-        for (provider, offer), chars in self.out.items():
-            current = json.loads((ds / provider / "mrkt-offer" / f"{offer}.credentials.json").read_text())
-            with self.subTest(offer=offer):
-                self.assertEqual(_normalized(current), _normalized(chars))
 
 
 if __name__ == "__main__":

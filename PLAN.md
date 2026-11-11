@@ -19,12 +19,12 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (`python -m rulebook_gen check`), so moving to it changes nothing in production.
 
 ## Phase 1: fix what is already deployed
-- [ ] Check whether a traffic-state buyer can write to orion-ld (`odrl:use` = any
-      method). Test with a throwaway entity type and policy, never on real data.
-- [ ] Datasets → `odrl:read`, and/or `methods: ["GET"]` on `/ngsi-ld/*` and
-      `/lepus/ngsi-ld/*`. Update the PAP instances that already exist.
-- [ ] Confirm on the live PAP (`GET /v1/policies` on the OPA sidecar) that each
-      purchase carries `vc:currentParty == <buyer DID>`.
+- [x] Buyers could write (`odrl:use` = any method): confirmed on OPA on 2026-11-11,
+      fixed in dataspace-on-upv `fix/read-only-data-routes` (GET-only routes + `odrl:read`).
+      To deploy: apply the townhall_vlc and vrain_upv connector layers, then
+      `P=townhall_vlc scripts/provider_offers.sh --update`.
+- [x] The live PAP carries `vc:currentParty == <buyer DID>`: confirmed on 2026-11-11
+      (policy `otpnkghnxu`, VRAIN's waste-containers purchase).
 
 ## Phase 2: frame (needs the project, not only us)
 - [ ] Ask CitCom (coordinator, WP leads) whether a data-governance deliverable or

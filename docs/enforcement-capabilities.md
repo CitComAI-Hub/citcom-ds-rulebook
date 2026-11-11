@@ -57,13 +57,16 @@ Still to confirm on the live PAP (plan, phase 1).
 
 ## Findings on the current policies
 
-1. **Every offer uses `odrl:use` (any method).** `/ngsi-ld/*` reaches orion-ld with no
-   method restriction, so a buyer of *traffic-state* may be able to POST/PATCH/DELETE
-   `TrafficState` entities. The type check passes because the type comes from the
-   URN in the path. `/lepus/ngsi-ld/*` depends on whether Lepus accepts writes. Needs
-   to be verified without touching real data. Fix it by using `odrl:read` for
-   datasets and/or `methods: ["GET"]` on the routes. Existing PAP instances keep
-   `odrl:use` until they are updated, because a new policy only applies to new orders.
+1. **Every offer used `odrl:use` (any method). CONFIRMED and FIXED.** On 2026-11-11,
+   townhall-vlc's OPA was asked, with VRAIN's live purchase policy, about
+   POST, PATCH, PUT, DELETE and `entityOperations/delete?type=WasteContainer` on
+   `/lepus/ngsi-ld` as VRAIN, and allowed all of them. Nothing was sent to Lepus or
+   Orion-LD. The batch delete passes the type check through the query string
+   whatever IDs the body carries. Lepus forwards writes to VLCi's real Orion. Fix
+   in dataspace-on-upv `fix/read-only-data-routes`: `methods: ["GET"]` on the
+   NGSI-LD routes, which also covers the policies already in the PAP, and
+   `odrl:read` in the dataset offers, so `dataset-access` generates `odrl:read`.
+   Lesson: never let the gateway route expose more methods than the class allows.
 2. **`clearence1` carries no meaning.** All four datasets use it. Thanks to the
    buyer binding it isn't a leak, but the rulebook should give roles a meaning
    (levels or classes) or drop them.
