@@ -11,4 +11,7 @@ the service are not reused for anything else (contractual).
 | Only users the buyer allowed | enforced | `vc:role hasPart <role>` AND `vc:type hasPart ServiceCredential` |
 | Only this service | enforced | `http:path isInPath <path>` |
 
+Terms and conditions published with each offer: [`service-access.terms.md`](service-access.terms.md),
+filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.
+
 Parameters: `path`, `credential`, `role`.

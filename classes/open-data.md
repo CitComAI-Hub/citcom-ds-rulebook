@@ -18,4 +18,7 @@ only accepts the service terms: identify as a participant, read only.
 Same enforcement as [dataset-access](dataset-access.md). The difference is legal: no
 "within CitCom" restriction and no deletion duty.
 
+Terms and conditions published with each offer: [`open-data.terms.md`](open-data.terms.md),
+filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.
+
 Parameters: `path`, `entity_type`, `credential`, `role`.

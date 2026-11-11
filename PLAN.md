@@ -63,8 +63,15 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       (dataspace-on-upv PR #37). Table `registration_event` in the portal DB (who
       approved, deactivated or deleted each registration, and when); read it with
       `GET /api/admin/registrations/:id/events` (admin token).
-- [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
-      a URL in the description) so a buyer sees what they agree to.
+- [ ] Terms generated from the rulebook (branch feat/offer-terms): `classes/<class>.terms.md`
+      + `[provider.terms]`/`[offer.terms]` → `<offer>.terms.md` (front matter: class,
+      class_url, rulebook commit). Published as the "License" term + a "Policy class" term
+      (R5.2). Same text as today for 5 offers; traffic-state (open-data) now CC BY 4.0
+      without the redistribution ban (R6.2).
+- [ ] dataset-access terms lack the class's "within CitCom only" and "delete on request
+      when the order ends": waiting for the Ajuntament (decision 2026-11-11).
+- [ ] service-access terms lack "user inputs are not reused" (class); container-location
+      shows layout names to other users: decide the wording.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.
 
 ## Phase 4: make it the only path

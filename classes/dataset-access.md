@@ -16,4 +16,7 @@ request when the order ends. All of these are contractual.
 | Only this dataset | enforced | `http:path isInPath <path>` AND `ngsi-ld:entityType eq <type>` |
 | Read only | enforced | `odrl:read` (GET only) + `methods: ["GET"]` on the APISIX route |
 
+Terms and conditions published with each offer: [`dataset-access.terms.md`](dataset-access.terms.md),
+filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.
+
 Parameters: `path`, `entity_type`, `credential`, `role`.

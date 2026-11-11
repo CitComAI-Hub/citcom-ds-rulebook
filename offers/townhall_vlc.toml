@@ -7,6 +7,17 @@
 id = "townhall_vlc"
 host = "townhall-vlc.citcom-vrain-dataspace.eu"
 
+# Values for the terms templates (classes/<class>.terms.md); an offer can override
+# any of them in its own [offer.terms].
+[provider.terms]
+provider_name = "Ajuntament de València"
+load_targets = "the Service or the VLCi platform"
+origin = 'The data comes from the **Ajuntament de València** (City Council of Valencia). When using or disseminating it, the source must be cited: *"Source: Ajuntament de València (VLCi)"*. The Provider transforms the data into the NGSI-LD format but does not modify the values.'
+quality = 'The data comes from municipal sensors and systems. It may contain errors, gaps or values that have not been validated. The Service is provided "as is", without any warranty of accuracy, completeness or fitness for a particular purpose. **It does not replace the official notices and information of the Ajuntament.**'
+data_protection_law = "the GDPR and Spanish Organic Law 3/2018"
+governing_law = "Spanish law"
+courts = "the courts of the city of Valencia"
+
 [[offer]]
 name = "waste-containers"
 class = "dataset-access"
@@ -38,3 +49,9 @@ path = "/ngsi-ld"
 entity_type = "TrafficState"
 credential = "MachineCredential"
 role = "clearence1"
+
+[offer.terms]
+source_publisher = "the Ajuntament de València on its open data portal"
+licence = "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+licence_url = "https://creativecommons.org/licenses/by/4.0/"
+source_url = "https://opendata.vlci.valencia.es/dataset/estat-transit-temps-real"

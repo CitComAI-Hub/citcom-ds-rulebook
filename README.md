@@ -8,7 +8,8 @@ policies deployed on the connectors.
   constraints that enforce them.
 - [`offers/`](offers/): each provider's offers, as a class plus parameters.
 - [`rulebook_gen/`](rulebook_gen/): generates the `<offer>.credentials.json` files
-  (TMForum product-spec characteristics) used by
+  (TMForum product-spec characteristics) and the `<offer>.terms.md` terms and
+  conditions (class template + offer values) used by
   [dataspace-on-upv](https://github.com/CitComAI-Hub/dataspace-on-upv) `scripts/provider_offers.sh`.
 - [`docs/enforcement-capabilities.md`](docs/enforcement-capabilities.md): what
   odrl-pap + OPA can and cannot enforce.
@@ -19,7 +20,7 @@ policies deployed on the connectors.
 Python ≥ 3.11, standard library only.
 
 ```bash
-python -m rulebook_gen build             # → build/<provider>/<offer>.credentials.json
+python -m rulebook_gen build             # → build/<provider>/<offer>.credentials.json + .terms.md
 python -m rulebook_gen check             # compare with ../dataspace-on-upv (or --ds-repo PATH)
 python -m unittest discover -s tests -t .
 tests/opa/run.sh                         # opa test of every offer's Rego (needs Docker)

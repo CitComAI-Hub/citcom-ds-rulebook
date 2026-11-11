@@ -5,6 +5,17 @@
 id = "vrain_upv"
 host = "vrain.citcom-vrain-dataspace.eu"
 
+# Values for the terms templates (classes/<class>.terms.md); an offer can override
+# any of them in its own [offer.terms].
+[provider.terms]
+provider_name = "VRAIN, Universitat Politècnica de València"
+data_protection_law = "the GDPR and Spanish Organic Law 3/2018"
+governing_law = "Spanish law"
+courts = "the courts of the city of Valencia"
+load_note = ""
+availability_note = ""
+data_protection_note = ""
+
 [[offer]]
 name = "waste-collection"
 class = "service-access"
@@ -12,9 +23,25 @@ path = "/waste-collection"
 credential = "ServiceCredential"
 role = "waste_collection_user"
 
+[offer.terms]
+service_name = "the MIAIS Waste Collection route optimization service"
+results = "routes"
+origin = 'The containers come from the **Ajuntament de València** (VLCi platform) and the routes are computed with **Openroute** (OpenStreetMap data). When using or disseminating the results, cite: *"MIAIS Waste Collection, VRAIN - Universitat Politècnica de València; data of the Ajuntament de València (VLCi) and © OpenStreetMap contributors"*.'
+quality = 'The routes are an aid to planning. They depend on the data of the containers, which may contain errors or gaps, and on the road network of OpenStreetMap. The Service is provided "as is", without any warranty of accuracy or fitness for a particular purpose.'
+availability_note = " The results depend on the availability of the data of the Ajuntament and of Openroute."
+
 [[offer]]
 name = "container-location"
 class = "service-access"
 path = "/container-location"
 credential = "ServiceCredential"
 role = "container_location_user"
+
+[offer.terms]
+service_name = "the Container Location Optimizer"
+results = "layouts"
+load_note = " (optimisations run one at a time and the queue is limited)"
+origin = 'The containers come from the **Ajuntament de València** (VLCi platform) and the population from **GHS-POP R2023A** (European Commission, Joint Research Centre, CC BY 4.0). When using or disseminating the results, cite: *"Container Location Optimizer, VRAIN - Universitat Politècnica de València; data of the Ajuntament de València (VLCi) and GHS-POP R2023A (European Commission, JRC)"*.'
+quality = 'The layouts are an aid to planning. Distances are straight-line distances, the population is an estimate on a grid of about 100 m, and the containers in the platform may contain errors or gaps (the platform only includes the containers with a sensor). The Service is provided "as is", without any warranty of accuracy or fitness for a particular purpose.'
+availability_note = " Optimisations in progress are lost if the Service restarts. The results depend on the availability of the data of the Ajuntament and of the population grid."
+data_protection_note = " The names given to the layouts are visible to the other users of the Service."

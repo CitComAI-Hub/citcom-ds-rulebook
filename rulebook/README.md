@@ -140,8 +140,10 @@ Completing it creates the consumer's access *(enforced: contract-management adds
 consumer to the provider's trusted issuers list and instantiates the class policy bound
 to the consumer's DID)*.
 
-**R5.2** Every offering states its policy class and links to it from its description
-*(audited)*.
+**R5.2** Every offering states its policy class and links to it *(audited)*. Its terms and
+conditions are generated from the class template (`classes/<class>.terms.md`), so they
+cannot contradict the class; the offering carries them as its "License" term and the
+class, with a link to this repository at the commit used, as its "Policy class" term.
 
 **R5.3** A provider can set **additional requirements** for an offering, for example
 civil liability insurance, a signed agreement or a declared purpose of use. They must:
