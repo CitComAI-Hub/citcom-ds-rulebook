@@ -70,7 +70,7 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 ## Phase 4: make it the only path
 - [x] `opa test` the generated Rego (2026-11-11, `tests/opa/run.sh`): a throwaway
       odrl-pap 1.4.10 gets every offer as contract-management sends it (one buyer per
-      offer), its bundles are tested with OPA 1.11.0. 125 cases (92 townhall_vlc, 33
+      offer), its bundles are tested with OPA 1.11.0. 114 cases (92 townhall_vlc, 22
       vrain_upv) pass. Mutation checks: `odrl:use` in dataset-access breaks the 24
       write cases; dropping the `vc:currentParty` binding breaks the 14 other-buyer and
       stranger cases. `GAP_` tests document what OPA allows and the gateway must block
@@ -78,8 +78,8 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
       `tests/opa/run.sh`. Green.
 - [ ] Drift job: needs secret `DS_DEPLOY_KEY` (read-only deploy key of the private
-      dataspace-on-upv); until then it only warns. Expected to fail until the tourism
-      offer reaches dataspace-on-upv main (`tourism_user` in VRAIN's verifier lists).
+      dataspace-on-upv); until then it only warns. `offers/` holds only what is
+      published in dataspace-on-upv main (tourism removed: WIP, not deployed).
 - [ ] `provider_offers.sh` reads the generated files (copy step or pinned version).
 - [ ] Same classes for the EDC data space: the Dataspace Protocol also carries ODRL.
 

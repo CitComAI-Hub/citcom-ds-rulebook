@@ -1,4 +1,5 @@
 # Offers of the VRAIN (UPV) connector: AI services used by people.
+# Only offers published in dataspace-on-upv main; add one when it is deployed.
 
 [provider]
 id = "vrain_upv"
@@ -17,10 +18,3 @@ class = "service-access"
 path = "/container-location"
 credential = "ServiceCredential"
 role = "container_location_user"
-
-[[offer]]
-name = "tourism"
-class = "service-access"
-path = "/tourism"
-credential = "ServiceCredential"
-role = "tourism_user"

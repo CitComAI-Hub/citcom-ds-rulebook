@@ -78,7 +78,7 @@ by hand that this repository does not produce is a breach of §8 *(audited:
 | Role | Does | Example (early adopters) |
 |---|---|---|
 | **Data provider** | Publishes datasets through its connector and offers them in the marketplace | Ajuntament de València |
-| **Service provider** | Publishes services (web apps, APIs, AI models) through its connector | VRAIN (MIAIS, container location, tourism) |
+| **Service provider** | Publishes services (web apps, APIs, AI models) through its connector | VRAIN (MIAIS, waste collection, container location) |
 | **Consumer** | Acquires offers and uses data or services, with its machines (MachineCredential) or its people (ServiceCredential) | VRAIN reading waste containers |
 | **Operator** | See R2.2 | VRAIN |
 
