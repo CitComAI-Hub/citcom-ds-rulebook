@@ -5,5 +5,7 @@ portal, by the operator. Changes made through the portal are recorded there.
 
 | Date | DID | Change | Why | By |
 |---|---|---|---|---|
-| _before the portal_ | did:web:townhall-vlc.citcom-vrain-dataspace.eu | Registered | Early adopter (Ajuntament de València) | VRAIN (date to be filled in) |
-| _before the portal_ | did:web:vrain.citcom-vrain-dataspace.eu | Registered | Early adopter, operator | VRAIN (date to be filled in) |
+| 2026-10-14 | did:web:townhall-vlc.citcom-vrain-dataspace.eu | Registered | Early adopter (Ajuntament de València). Date = connector namespace created. | VRAIN |
+| 2026-10-14 | did:web:vrain.citcom-vrain-dataspace.eu | Registered | Early adopter, operator. Date = connector namespace created. | VRAIN |
+
+The trust anchor itself was deployed on 2026-09-24 (namespace `trust-anchor`).
