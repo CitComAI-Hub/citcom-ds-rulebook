@@ -42,10 +42,8 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 ## Phase 3: policy classes
 - [x] First classes: `open-data`, `dataset-access`, `service-access` (rulebook §7).
 - [ ] More classes when an offer needs them, each with its legal text and enforced constraints.
-      Candidates: `open-registered` (any member, read), `dataset-access` (buyer only,
-      read), `service-access` (buyer's users, by role), `trial` (+ `odrl:dateTime`
-      expiry), `restricted` (+ claim on organisation type or declared purpose
-      via `ovc:leftOperand`).
+      Candidates: `trial` (+ `odrl:dateTime` expiry), `restricted` (+ claim on
+      organisation type or declared purpose via `ovc:leftOperand`).
 - [ ] Automatic revocation when an order ends or a participant leaves (rulebook R4.3):
       check what contract-management does on order cancellation.
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
