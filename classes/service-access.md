@@ -10,6 +10,7 @@ the service are not reused for anything else (contractual).
 | Only users of the buying organisation | enforced | `vc:currentParty == buyer DID` (added by contract-management) |
 | Only users the buyer allowed | enforced | `vc:role hasPart <role>` AND `vc:type hasPart ServiceCredential` |
 | Only this service | enforced | `http:path isInPath <path>` |
+| Fair use: 600 requests per minute per buying organisation (R7.5) | enforced | APISIX `limit-count` on the route, keyed by the credential issuer; 429 over the limit |
 
 **Published terms today:** they do not yet say that user inputs are not reused
 (rulebook open decision 6).

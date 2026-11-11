@@ -1,7 +1,7 @@
 """Generate the offers' policy characteristics from offers/<provider>.toml.
 
     python -m rulebook_gen build  [--out DIR] [--ref REF]
-        writes DIR/<provider>/<offer>.credentials.json and <offer>.terms.md
+        writes DIR/<provider>/<offer>.credentials.json, <offer>.terms.md and rate-limits.json
     python -m rulebook_gen check  --ds-repo PATH  # diffs against dataspace-on-upv
 """
 
@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tomllib
 
-from . import terms
+from . import limits, terms
 
 from .policies import CLASSES, characteristics
 
@@ -39,6 +39,10 @@ def load_offers(offers_dir):
             missing = terms.missing(provider, offer)
             if missing:
                 sys.exit(f"{file}: offer {offer['name']}: terms need {missing} in [provider.terms] or [offer.terms]")
+        try:
+            limits.per_path(offers)
+        except ValueError as e:
+            sys.exit(f"{file}: {e}")
         yield provider, offers
 
 
@@ -69,6 +73,15 @@ def generate_terms(offers_dir, ref):
     }
 
 
+def generate_limits(offers_dir):
+    """{provider_id: {path: {count, time_window}}}"""
+    return {provider["id"]: limits.per_path(offers) for provider, offers in load_offers(offers_dir)}
+
+
+def _limits_json(value):
+    return json.dumps(value, indent=2) + "\n"
+
+
 def current_ref():
     try:
         return subprocess.run(
@@ -88,6 +101,10 @@ def cmd_build(args):
     for (provider, offer), doc in generate_terms(args.offers, args.ref or current_ref()).items():
         path = out / provider / f"{offer}.terms.md"
         path.write_text(doc)
+        print(path)
+    for provider, per_path in generate_limits(args.offers).items():
+        path = out / provider / "rate-limits.json"
+        path.write_text(_limits_json(per_path))
         print(path)
 
 
@@ -114,6 +131,16 @@ def cmd_check(args):
         cur = current.read_text()
         same = terms.body(cur) == terms.body(doc) and f"class: {_class_of(doc)}\n" in cur
         print(f"{'OK' if same else 'DIFFERS':8} {provider}/{offer} (terms)")
+        failures += not same
+    # Rate limits: one file per provider, next to its APISIX routes.
+    for provider, per_path in generate_limits(args.offers).items():
+        current = pathlib.Path(args.ds_repo) / "providers" / provider / "connector" / "resources" / "rate-limits.json"
+        if not current.exists():
+            print(f"NEW      {provider} (rate limits)")
+            failures += 1
+            continue
+        same = json.loads(current.read_text()) == per_path
+        print(f"{'OK' if same else 'DIFFERS':8} {provider} (rate limits)")
         failures += not same
     for current in sorted(ds.glob("*/mrkt-offer/*.credentials.json")):
         key = (current.parent.parent.name, current.name.removesuffix(".credentials.json"))

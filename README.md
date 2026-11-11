@@ -43,6 +43,14 @@ For every offer in `offers/*.toml`:
   ([`rulebook_gen/terms.py`](rulebook_gen/terms.py)). The marketplace shows the text as
   the offering's "License" term and the class as its "Policy class" term (R5.2).
 
+And one per provider:
+
+- **`rate-limits.json`**: requests per time window that each buying organisation can
+  make to each path (R7.5): the class default, or the offer's `rate_limit`. Offers that
+  share a path must share the limit ([`rulebook_gen/limits.py`](rulebook_gen/limits.py)).
+  dataspace-on-upv puts it on the APISIX routes (`limit-count`, keyed by the issuer of
+  the buyer's credential) and keeps it in `providers/<provider>/connector/resources/`.
+
 `offers/` holds **only what is published** in dataspace-on-upv `main`. An offer that is
 still being built (a branch, a service not deployed) is added when it is deployed:
 otherwise it changes the deployed ones (the verifier lists every role of a credential
@@ -58,10 +66,12 @@ To change a class, an offer or its terms, or to add an offer:
 3. In dataspace-on-upv, on a branch: write the new commit of this repository in
    `providers/RULEBOOK_REF` and run `make rulebook-offers`
    (`scripts/rulebook_offers.sh`). It regenerates `providers/*/mrkt-offer/*.credentials.json`
-   and `*.terms.md`; the diff shows exactly what changes. Open a PR.
+   and `*.terms.md`, and `providers/*/connector/resources/rate-limits.json`; the diff shows
+   exactly what changes. Open a PR.
 4. After the merge, sync the server and run, on it, `P=<provider> scripts/provider_offers.sh`
    (dry-run) and then `--update`. It patches the catalog, specs and offerings in TMForum
-   and keeps their ids.
+   and keeps their ids. A change in `rate-limits.json` is applied with the provider's
+   connector layer (Terraform plan + apply), not by `provider_offers.sh`.
 5. Existing purchases keep the policy they got when their order was completed. A new
    policy applies to new orders only.
 
@@ -109,3 +119,4 @@ Versions match dataspace-on-upv. When one is upgraded there, update it here and 
 | odrl-pap (1.4.10) | `PAP_IMAGE` in `tests/opa/run.sh` |
 | OPA (1.11.0, default of data-space-connector chart 10.0.0) | `OPA_IMAGE` in `tests/opa/run.sh` |
 | contract-management (3.3.12) | `rulebook_gen/order.py` (re-read its `PAPAdapter`) |
+| APISIX (3.15.0), VCVerifier (6.13.0) | rate limits: the key reads the issuer from the verifier's token after `openid-connect` (rewrite phase) validated it; re-check if either changes the token or the phases |

@@ -78,7 +78,12 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       when the order ends": waiting for the Ajuntament (decision 2026-11-11).
 - [ ] service-access terms lack "user inputs are not reused" (class); container-location
       shows layout names to other users: decide the wording.
-- [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.
+- [ ] Rate limits (R7.5, branch feat/rate-limits): `rulebook_gen/limits.py` → per provider
+      `rate-limits.json` (60/min data, 600/min services, per buying organisation). Tested
+      on a local APISIX 3.15 with a mock verifier (RS256 like VCVerifier): per issuer, a
+      new token keeps the count, forged tokens get 401 and do not consume the victim's
+      count, separate counter per route. One APISIX replica per connector, so local
+      counters are exact. dataspace-on-upv: PR + connector apply pending.
 
 ## Phase 4: make it the only path
 - [x] `opa test` the generated Rego (2026-11-11, `tests/opa/run.sh`): a throwaway

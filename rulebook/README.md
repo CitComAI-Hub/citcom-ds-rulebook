@@ -216,6 +216,14 @@ through any offering *(enforced: `odrl:read` and GET-only routes)*.
 them, but must attribute the source and must not let anyone rebuild the raw data of a
 *shared* dataset *(contractual)*.
 
+**R7.5** Fair use. Each class sets how many requests a buying organisation can make to
+an offer's route in a time window: 60 per minute for data (`open-data`,
+`dataset-access`), 600 per minute for services (`service-access`, whose pages load
+their assets through the route). A provider can set a different limit for an offer in
+`offers/`. Requests over the limit get HTTP 429 *(enforced: APISIX `limit-count` on the
+provider's route, counted per issuer of the buyer's credential, so a new token does
+not reset it; generated in `rate-limits.json`)*.
+
 ## 8. Technical rules
 
 **R8.1** Data is offered as NGSI-LD, following Smart Data Models where one exists.
@@ -271,6 +279,7 @@ offerings, exclusion (R4.2).
 | 2026-11-11 | Notice period for rulebook changes: 30 days (security fixes exempt). | R2.3 |
 | 2026-11-11 | *Provisional:* data from public endpoints is Open; data from the provider's internal platform (Lepus) is Shared, within the data space only. | R6.4 |
 | 2026-11-11 | Offer terms are generated from the class templates, and every offering shows its class ("Policy class" term). Published the same day. | R5.2 |
+| 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services, counted per credential issuer. | R7.5 |
 | 2026-11-11 | traffic-state is open data (CC BY 4.0): its terms no longer ban redistribution. The other Ajuntament offers keep their published terms until the Ajuntament agrees (open decision 5). | R6.2, R7 |
 
 ## Open decisions

@@ -15,6 +15,7 @@ only accepts the service terms: identify as a participant, read only.
 | Read only | enforced | `odrl:read` (GET only) + `methods: ["GET"]` on the APISIX route |
 | Only entity reads | enforced | APISIX data routes serve only `/v1/entities` and `/v1/entities/*` (dataspace-on-upv PR #42); client `X-Stripped-Path` and tenant headers removed (PR #40) |
 | Attribute the source | contractual | |
+| Fair use: 60 requests per minute per buying organisation (R7.5) | enforced | APISIX `limit-count` on the route, keyed by the credential issuer; 429 over the limit |
 
 Same enforcement as [dataset-access](dataset-access.md). The difference is legal: no
 "within CitCom" restriction and no deletion duty.
