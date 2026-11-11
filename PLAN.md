@@ -72,7 +72,7 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
       odrl-pap 1.4.10 gets every offer as contract-management sends it (one buyer per
       offer), its bundles are tested with OPA 1.11.0. 114 cases (92 townhall_vlc, 22
       vrain_upv) pass. Mutation checks: `odrl:use` in dataset-access breaks the 24
-      write cases; dropping the `vc:currentParty` binding breaks the 14 other-buyer and
+      write cases; dropping the `vc:currentParty` binding breaks the other-buyer and
       stranger cases. `GAP_` tests document what OPA allows and the gateway must block
       (F1 client-chosen type, F2 `x-stripped-path`; dataspace-on-upv AUDIT-fable.md).
 - [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
