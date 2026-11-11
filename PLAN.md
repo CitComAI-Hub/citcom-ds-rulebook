@@ -54,9 +54,13 @@ dataspace-on-upv provider_offers.sh publishes them; contract-management
 - [x] End-to-end test (2026-11-11): order completed → access granted (read only);
       cancelled → TIL scope and PAP policy gone, OPA denies; other purchases untouched.
 - [x] Script to cancel a participant's orders: dataspace-on-upv `feat/participant-orders-script` (PR).
-- [ ] Trust-anchor record (R2.5): audit trigger (dataspace-on-upv
-      `feat/trust-anchor-audit`) + registration history (On-Boarding-Portal
-      `feat/registration-history`). Written and tested; PRs, then deploy.
+- [x] Trust-anchor audit log DEPLOYED 2026-11-11 (dataspace-on-upv PR #35):
+      `audit.trust_anchor_log` in tildb, triggers on the 4 TIR/TIL tables, til has
+      no access. Read: `SELECT at, db_user, tbl, op, coalesce(new_row, old_row)
+      FROM audit.trust_anchor_log ORDER BY id;` as postgres on postgres-0.
+- [x] Offboarding script merged (PR #36): `scripts/participant_orders.sh`.
+- [ ] Portal registration history (On-Boarding-Portal `feat/registration-history`,
+      merged): needs a new portal image + tag bump in dataspace-on-upv.
 - [ ] Link each offer to its human-readable terms (TMForum productOfferingTerm or
       a URL in the description) so a buyer sees what they agree to.
 - [ ] Rate limits (APISIX) for the classes that need them, generated from the same file.

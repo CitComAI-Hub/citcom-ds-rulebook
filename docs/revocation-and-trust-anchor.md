@@ -73,7 +73,7 @@ What exists today:
 
 That is not enough for R2.5. Proposal:
 
-Implemented (pending review/deploy):
+Implemented (audit log deployed 2026-11-11; offboarding script merged; portal history merged, waiting for a new portal image):
 - dataspace-on-upv `feat/trust-anchor-audit`: items 1 below (`modules/trust_anchor/audit.tf`,
   `resources/audit.sql`), tested on Postgres 16.
 - On-Boarding-Portal `feat/registration-history`: item 2 (`RegistrationEvent`,
