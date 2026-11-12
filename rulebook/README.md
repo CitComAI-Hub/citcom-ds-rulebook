@@ -177,22 +177,15 @@ its category being correct *(contractual)*.
 **R6.4** The category depends on **where the data comes from**, not on whether a similar
 dataset exists elsewhere:
 - data the data space takes from a provider's **public endpoint** is **Open**;
-- data it takes from a provider's **internal platform** is **Shared**. For the
-  Ajuntament de València that is the VLCi platform, reached through Lepus. A similar
-  dataset may be on the open data portal, but this feed (frequency, attributes,
+- data it takes from a provider's **internal platform** is **Shared**. A similar
+  dataset may be on an open data portal, but that feed (frequency, attributes,
   history) is not the public one.
 
 *Provisional:* the Ajuntament and VRAIN are still agreeing on this. Until they do, R6.4
 applies.
 
-Current datasets (2026-11-11):
-
-| Offer | Source | Category |
-|---|---|---|
-| traffic-state | Public endpoint (open data `estat-transit-temps-real`, CC BY 4.0), loaded by the provider's ingestion | Open |
-| traffic-flow | VLCi platform, through Lepus | Shared |
-| air-quality | VLCi platform, through Lepus | Shared |
-| waste-containers | VLCi platform, through Lepus | Shared |
+Each provider records the category of its datasets, and why, in its conformance
+evidence (see [implementation-profiles](../docs/implementation-profiles.md)).
 
 ## 7. Usage terms (policy classes)
 
@@ -234,7 +227,7 @@ trusted issuers list *(enforced)*.
 
 **R8.3** Each connector exposes only what its offerings need, and its gateway routes must
 not allow more than the classes allow (for example, no write methods on data routes)
-*(audited: route review in dataspace-on-upv)*.
+*(audited: operator's route review)*.
 
 **R8.4** Access policies are produced by this repository and deployed through the
 marketplace (R2.4).
@@ -245,8 +238,9 @@ offering grants must not reach data outside that definition, **whatever the cons
 puts in the request** (query parameters, headers, entity ids, paths). Data that is not
 offered must not be reachable through the data space, and new data the provider's
 systems start publishing is not served until it is assigned to an offering
-*(audited: each connector shows how it meets this in its
-[implementation profile](../docs/implementation-profiles.md))*.
+*(audited: each participant shows how it meets this in its conformance evidence,
+following the [implementation profile](../docs/implementation-profiles.md) of its
+stack)*.
 
 **R8.6** Minimum security baseline for every connector *(audited: operator's review and
 conformance checks)*:
@@ -309,6 +303,7 @@ offerings, exclusion (R4.2).
 | 2026-11-11 | Offer terms are generated from the class templates, and every offering shows its class ("Policy class" term). Published the same day. | R5.2 |
 | 2026-11-12 | An offering reaches only the data it defines, whatever the consumer puts in the request; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. Profiles per stack in docs/implementation-profiles.md. | R8.5, R8.6, R9.3 |
 | 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services, counted per credential issuer. | R7.5 |
+| 2026-11-12 | The rulebook and its implementation profiles are generic and name no participant's datasets or deployments. Each participant keeps its conformance evidence in its own repository (for the operator's deployment, `CONFORMANCE.md` in dataspace-on-upv). | R6.4, R8.5, R8.6 |
 | 2026-11-11 | traffic-state is open data (CC BY 4.0): its terms no longer ban redistribution. The other Ajuntament offers keep their published terms until the Ajuntament agrees (open decision 5). | R6.2, R7 |
 
 ## Open decisions
@@ -332,6 +327,5 @@ offerings, exclusion (R4.2).
 7. R9.3 for the audit of 2026-11-11: report finding 2 (odrl-pap takes `http:path` from
    the client's `X-Stripped-Path`) privately to the odrl-pap maintainers, and tell
    participants that run their own connector. Not done yet.
-8. R8.6 non-conformities listed in
-   [implementation-profiles](../docs/implementation-profiles.md#known-non-conformities-r86)
-   (default secrets in dataspace-on-upv).
+8. R8.6 non-conformities of the operator's deployment (default secrets), listed in
+   `CONFORMANCE.md` in dataspace-on-upv.
