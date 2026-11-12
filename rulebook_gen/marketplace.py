@@ -134,7 +134,9 @@ def _matches_template(template_text, license_text):
     last = 0
     for m in string.Template.pattern.finditer(template_text):
         if m.group("named") or m.group("braced"):
-            pattern += re.escape(template_text[last:m.start()]) + "(.*?)"
+            # a provider's value is free text, but it cannot open a new paragraph or
+            # clause: that is how a clause would be added to the class's terms
+            pattern += re.escape(template_text[last:m.start()]) + r"((?:(?!\n\s*\n|\*\*\d+\.).)*?)"
             last = m.end()
     pattern += re.escape(template_text[last:])
     return re.fullmatch(pattern, license_text.strip("\n"), re.S) is not None

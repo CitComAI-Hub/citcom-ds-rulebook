@@ -99,7 +99,11 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       R8.8); open decision 10 (operator's services agreement).
 - [x] Marketplace audit (2026-11-12): `rulebook_gen audit` + daily workflow and badge;
       every published offer checked against its class, registered or not. First run on
-      production: 6/6 OK. Next: rulebook service for the marketplace wizard (plan below).
+      production: 6/6 OK.
+- [x] Rulebook service (2026-11-12): `rulebook_gen serve` (classes / generate / validate),
+      image `citcom-ds-rulebook-service:<commit>` per commit of main. Next: the wizard in
+      the marketplace frontend and generation in its proxy (phase 3), then close the
+      other write paths to TMForum and the PAP (phase 4, separate PR).
 - [x] Roles (2026-11-12, R3.4, open decision 9 closed): meaning documented, no rename.
 - [x] Plain language (2026-11-12): the rulebook is for non-technical readers of any
       participant; classes start with what they give and ask; docs/ is the technical

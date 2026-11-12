@@ -4,6 +4,7 @@
         writes DIR/<provider>/<offer>.credentials.json, <offer>.terms.md and rate-limits.json
     python -m rulebook_gen check  --ds-repo PATH  # diffs against dataspace-on-upv
     python -m rulebook_gen audit  [--marketplace URL]  # every published offer vs its class
+    python -m rulebook_gen serve  [--port 8080]        # HTTP service for the marketplace
 """
 
 import argparse
@@ -174,9 +175,15 @@ def main():
     build.add_argument("--ref", help="rulebook commit named in the terms (default: this checkout's HEAD)")
     check = sub.add_parser("check")
     check.add_argument("--ds-repo", default=ROOT.parent / "dataspace-on-upv")
+    serve = sub.add_parser("serve")
+    serve.add_argument("--host", default="0.0.0.0")
+    serve.add_argument("--port", type=int, default=8080)
     audit = sub.add_parser("audit")
     audit.add_argument("--marketplace", default="https://marketplace.citcom-vrain-dataspace.eu")
     args = parser.parse_args()
+    if args.cmd == "serve":
+        from . import service
+        return service.serve(args.host, args.port) or 0
     return {"build": cmd_build, "check": cmd_check, "audit": cmd_audit}[args.cmd](args) or 0
 
 

@@ -109,6 +109,21 @@ class MarketplaceAuditTest(unittest.TestCase):
                 )
         self.assertEqual(self.status("vrain_upv/container-location")[0], "FAIL")
 
+    def test_clause_appended_fails(self):
+        # the last gap of the template must not swallow an added paragraph
+        for term in self.offering("vrain_upv/waste-collection")["productOfferingTerm"]:
+            if term["name"] == "License":
+                term["description"] += "\n\n**11. Changes.** The Provider may change these terms at any time."
+        self.assertEqual(self.status("vrain_upv/waste-collection")[0], "FAIL")
+
+    def test_paragraph_inside_a_value_fails(self):
+        for term in self.offering("townhall_vlc/traffic-flow")["productOfferingTerm"]:
+            if term["name"] == "License":
+                term["description"] = term["description"].replace(
+                    "Spanish law.", "Spanish law.\n\nThe consumer waives every right."
+                )
+        self.assertEqual(self.status("townhall_vlc/traffic-flow")[0], "FAIL")
+
     def test_license_with_a_clause_removed_fails(self):
         for term in self.offering("townhall_vlc/traffic-state")["productOfferingTerm"]:
             if term["name"] == "License":

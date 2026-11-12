@@ -33,6 +33,7 @@ policies and the terms and conditions published on the marketplace.
 python -m rulebook_gen build [--ref REF]  # → build/<provider>/<offer>.credentials.json + <offer>.terms.md
 python -m rulebook_gen check             # compare with ../dataspace-on-upv (or --ds-repo PATH)
 python -m rulebook_gen audit             # every offer in the marketplace vs its class (or --marketplace URL)
+python -m rulebook_gen serve             # HTTP service for the marketplace (port 8080)
 python -m unittest discover -s tests -t .
 tests/opa/run.sh                         # opa test of every offer's Rego (needs Docker)
 ```
@@ -63,6 +64,26 @@ And one per provider:
 still being built (a branch, a service not deployed) is added when it is deployed:
 otherwise it changes the deployed ones (the verifier lists every role of a credential
 type) and the drift check fails.
+
+## Rulebook service
+
+The marketplace does not write policies or terms itself: its offer wizard asks the
+rulebook service ([`rulebook_gen/service.py`](rulebook_gen/service.py)), which runs this
+generator at the commit its image was built from.
+
+| Endpoint | Does |
+|---|---|
+| `GET /classes` | The classes, what each one is for, the fields it asks (name, path, entity type or role), the terms fields, the default request limit |
+| `POST /generate` | One offer's characteristics, its "License" and "Policy class" terms and its request limit. Credential and role are fixed by the class for datasets; a field outside the class is ignored; values that would add a paragraph or a clause to the terms are refused. |
+| `POST /validate` | The marketplace audit (`rulebook_gen audit`) on the specifications and offerings sent |
+| `GET /health` | Status and rulebook commit |
+
+Image: `ghcr.io/citcomai-hub/citcom-ds-rulebook-service:<commit>`, built by
+[`image.yml`](.github/workflows/image.yml) for every commit of `main` after the tests.
+Internal service, no authentication: only the marketplace's proxy reaches it.
+The verifier policy of an offer lists every role its provider grants with that
+credential type, so the caller sends the provider's other offers (`provider_offers`),
+and when a provider adds a role, its earlier offers must be generated again.
 
 ## How a change reaches production
 

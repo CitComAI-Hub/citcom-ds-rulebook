@@ -1,0 +1,4 @@
+*
+!rulebook_gen/
+!classes/
+rulebook_gen/__pycache__/
