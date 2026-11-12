@@ -69,6 +69,28 @@ FIELDS = {
     "entity_type": ("NGSI-LD entity type, a Smart Data Model where one exists", re.compile(r"^[A-Za-z][A-Za-z0-9]{0,99}$")),
     "role": ("Role the buyer gives to the people who use the service, e.g. route_planner_user", re.compile(r"^[a-z][a-z0-9_]{0,62}$")),
 }
+# The gaps of the terms templates, as the wizard asks for them. "provider" values
+# are the same for every offer of a provider (the wizard remembers them); "offer"
+# values describe one offer. Optional ones are appended to a sentence.
+TERMS_FIELDS = {
+    "provider_name": ("provider", False, "Your organisation's name, as it appears in the terms", "Ajuntament de València"),
+    "governing_law": ("provider", False, "The law that governs the terms", "Spanish law"),
+    "courts": ("provider", False, "The courts for any dispute", "the courts of the city of Valencia"),
+    "data_protection_law": ("provider", False, "The data protection law you apply", "the GDPR and Spanish Organic Law 3/2018"),
+    "load_targets": ("provider", False, "What heavy use must not degrade", "the Service or the VLCi platform"),
+    "origin": ("offer", False, "Where the data comes from and how to cite it", 'The data comes from the city sensors. Cite: "Source: ACME (platform X)".'),
+    "quality": ("offer", False, "What users can expect of the data or results", 'The data may contain errors or gaps. It is provided "as is".'),
+    "source_publisher": ("offer", False, "Who publishes the open data", "the Ajuntament de València"),
+    "licence": ("offer", False, "The open licence of the source", "CC BY 4.0"),
+    "licence_url": ("offer", False, "Link to that licence", "https://creativecommons.org/licenses/by/4.0/"),
+    "source_url": ("offer", False, "Link to the public source dataset", "https://opendata.example.org/dataset/traffic"),
+    "service_name": ("offer", False, "The service, as named in the terms", "the Route Planner"),
+    "results": ("offer", False, "What the service produces", "routes"),
+    "load_note": ("offer", True, "Note on fair use, after 'degrades the Service'", "(optimisations run one at a time)"),
+    "availability_note": ("offer", True, "Extra sentence on availability", "Jobs in progress are lost if the Service restarts."),
+    "data_protection_note": ("offer", True, "Extra sentence on data protection", "The names given to the layouts are visible to the other users."),
+}
+
 HOST = re.compile(r"^(?=.{1,253}$)[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$")
 
 
@@ -104,7 +126,11 @@ def classes():
             "credential": info["credential"],
             "role": info["role"],
             "fields": [{"name": f, "description": FIELDS[f][0]} for f in info["fields"]],
-            "terms_fields": sorted(terms.template(cls).get_identifiers()),
+            "terms_fields": [
+                {"name": f, "scope": TERMS_FIELDS[f][0], "optional": TERMS_FIELDS[f][1],
+                 "description": TERMS_FIELDS[f][2], "example": TERMS_FIELDS[f][3]}
+                for f in sorted(terms.template(cls).get_identifiers())
+            ],
             "rate_limit": limits.DEFAULTS[cls],
             "url": f"{terms.REPO_URL}/blob/{rulebook_ref()}/classes/{cls}.md",
         })
@@ -147,6 +173,15 @@ def generate(request):
         offer[field] = value
     provider = {"id": host, "host": host, "terms": _terms_values(provider_in.get("terms"), "provider.terms")}
     offer["terms"] = _terms_values(offer_in.get("terms"), "offer.terms")
+    # optional notes are appended to a sentence: empty, or one space before them
+    for values in (provider["terms"], offer["terms"]):
+        for key, value in list(values.items()):
+            if TERMS_FIELDS.get(key, (None, False))[1]:
+                value = value.strip()
+                values[key] = f" {value}" if value else ""
+    for field in terms.template(cls).get_identifiers():
+        if TERMS_FIELDS[field][1]:
+            offer["terms"].setdefault(field, provider["terms"].get(field, ""))
     missing = terms.missing(provider, offer)
     if missing:
         raise InvalidRequest(f"terms need {missing} in provider.terms or offer.terms")

@@ -39,7 +39,23 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual({c["id"] for c in body}, {"open-data", "dataset-access", "service-access"})
         services = next(c for c in body if c["id"] == "service-access")
         self.assertIsNone(services["role"])
-        self.assertIn("provider_name", services["terms_fields"])
+        fields = {f["name"]: f for f in services["terms_fields"]}
+        self.assertEqual(fields["provider_name"]["scope"], "provider")
+        self.assertTrue(fields["load_note"]["optional"])
+        for c in body:
+            for f in c["terms_fields"]:
+                self.assertTrue(f["description"] and f["example"], f)
+
+    def test_optional_notes_can_be_left_out(self):
+        values = {f: "x" for f in terms.template("service-access").get_identifiers() if not f.endswith("_note")}
+        status, body = self.call("/generate", {
+            "class": "service-access",
+            "provider": {"host": "acme.example.org", "terms": values},
+            "offer": {"name": "app", "path": "/app", "role": "app_user", "terms": {"load_note": "(one job at a time)"}},
+        })
+        self.assertEqual(status, 200, body)
+        self.assertIn("degrades the Service (one job at a time);", body["terms"]["License"])
+        self.assertIn("through the marketplace.\n", body["terms"]["License"])
 
     def test_generates_what_build_generates(self):
         # every offer of offers/, asked through the service, gives the same policies
