@@ -112,6 +112,16 @@ and software, and every access is tied to the organisation)*.
 people and software it controls, and revokes them when that stops being true
 *(contractual)*.
 
+**R3.4** Access roles. Each offering names a role. The buying organisation gives that
+role to the people or software it allows to use what it bought, and only they get
+access *(enforced: access needs both the organisation's credential and the role)*.
+The role never extends access beyond what the organisation bought (R5.1).
+- Each **service** has its own role, so the buyer chooses who uses each service.
+- All **datasets** share one role for software access. Software that holds it can read
+  every dataset its organisation bought.
+
+The role names are in each class (§7).
+
 ## 4. Joining and leaving
 
 **R4.1** To join, an organisation registers through the onboarding portal, says which
@@ -348,6 +358,7 @@ offerings, exclusion (R4.2).
 | 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services. | R7.5 |
 | 2026-11-12 | Service terms state that what users enter is used only to provide the service (clause 8). | R7.1 |
 | 2026-11-12 | Structure aligned with the DSSC Blueprint v3.0 (rulebook v0.3): agreements as institutional, data sharing and services; members and participants; data rights holders; admission criteria and reasons for a denial; conformity scheme and data space registry. | R2.1, §3, R4.1, R4.6, R4.7, §5, R6.3, R8.7, R8.8 |
+| 2026-11-12 | Access roles: the buyer gives them to its people or software; one role per service, one shared role for software access to datasets. | R3.4 |
 | 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
 
 ## Open decisions
@@ -368,9 +379,9 @@ offerings, exclusion (R4.2).
    connector. Not done yet.
 8. Known non-conformities of the operator's own deployment (default secrets), listed
    in its conformance evidence.
-9. What access roles mean. Today every offering asks for the same role, which carries
-   no meaning (access is still limited to what each organisation bought). Give roles a
-   meaning (levels, kinds of user) or drop them.
+9. ~~What access roles mean~~: done 2026-11-12 (R3.4). The dataset role keeps its
+   technical name; renaming it would mean migrating live purchases, so it waits until
+   the realms or the onboarding portal change for another reason.
 10. Enabling services agreement (§5): a written agreement between the governance
     authority and the operator for the shared services (scope, availability, what
     happens if the operator changes, R2.5 neutrality).

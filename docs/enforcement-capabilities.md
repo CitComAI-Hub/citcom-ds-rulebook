@@ -71,8 +71,9 @@ one permission per policy.
    generate `odrl:read`, and data routes accept only GET, which also covers policies
    created before the fix.
 2. **Roles.** contract-management binds every purchase to the buyer's organisation, so
-   a role shared by every offering is not a leak, but it carries no meaning (rulebook
-   open decision 9).
+   a role shared by several offerings never extends access beyond what the buyer
+   bought. Its meaning is set by rulebook R3.4: one role per service, one shared role
+   (`clearence1`) for software access to datasets.
 3. **The verifier policy lists every role of a credential type.** The verifier checks
    that every role in the credential is in the trusted issuers list entry's allowed
    values (a subset check), and a consumer's users hold all their roles. Entries are

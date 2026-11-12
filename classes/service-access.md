@@ -3,7 +3,8 @@
 **For:** services (web applications, APIs, AI models) offered through the data space.
 
 **What you get:** access to one service for the people of your organisation that your
-organisation authorises.
+organisation authorises, by giving them the service's own role (named in the offering,
+rulebook R3.4).
 
 **What you must do:** respect the service's terms of use, published in its offering.
 
