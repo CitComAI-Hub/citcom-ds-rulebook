@@ -1,8 +1,8 @@
 # Implementation profiles
 
 How each kind of connector meets the technology-neutral rules of the rulebook, mainly
-R8.5 (an offering reaches only the data it defines) and R8.6 (minimum security
-baseline). The rulebook says *what* must hold; this page says *how* for each stack.
+R8.1 (data models), R8.5 (an offering reaches only the data it defines) and R8.6
+(minimum security baseline). The rulebook says *what* must hold; this page says *how* for each stack.
 A participant with a different stack adds its own profile here before its offerings
 are published.
 
@@ -57,6 +57,37 @@ no dataset; its data route has no policy, so OPA denies every request).
 | R8.5 | Each service has its own path (`/waste-collection/*`, `/container-location/*`) and policy; the session cookie is shared by the host, but OPA decides on every request. |
 | R8.6: trusted values removed | The gateway removes `X-Stripped-Path`. |
 | R7.5: fair use | APISIX `limit-count` per buying organisation: 600/min per service route. |
+
+## Data models (R8.1)
+
+R8.1 asks for NGSI-LD following Smart Data Models (SDM). A provider shows it by checking
+what consumers actually get against the official SDM schemas, pinned to a commit.
+
+**townhall-vlc through Lepus.** VLCi data is not SDM-conformant as published (null
+attributes, number strings, VLCi-specific codes). Lepus ≥ v1.6 adapts it without
+inventing data (`lib/sdmConformance.js` in CitComAI-Hub/lepus): null attributes left out,
+WasteContainer `refDevice` as an array, `category` `Superficie` → `ground`,
+`fillingLevel` number strings as numbers, TrafficFlowObserved `intensity` -1 (no
+measurement) left out. Checked with the audit tool in the fork (`tools/sdm-audit/`,
+reads through a running Lepus):
+
+| Type (SDM version) | Lepus v1.4 | Lepus v1.6 (deployed 2026-11-12) |
+|---|---|---|
+| AirQualityObserved (0.1.4) | 33/33 | 33/33 |
+| TrafficFlowObserved (0.0.1) | 330/386 | 386/386 |
+| WasteContainer (0.3.0) | 161/543 | 538/543 |
+
+Known deviation, not fixed because fixing it would mean inventing data (reported to the
+Ajuntament): 5 WasteContainer entities have no `location` (null in VLCi; SDM requires
+it). A new audit should show only this; anything else is new and means VLCi changed how
+it publishes an attribute. Attributes VLCi adds and SDM does not define (`TimeInstant`,
+`height`, the air-quality `*Flag`/`*Origin` attributes, …) are allowed by SDM.
+
+Not measured yet: `TrafficState` (traffic-state, served from the townhall-vlc Orion-LD,
+not through Lepus).
+
+Going back below Lepus v1.6 breaks R8.1 for the three Lepus datasets (below v1.4 it also
+breaks R8.5, see above).
 
 ## Known non-conformities (R8.6)
 

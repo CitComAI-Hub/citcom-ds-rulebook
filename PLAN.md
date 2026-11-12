@@ -87,6 +87,9 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       counters are exact.
 - [x] R8.5 / R8.6 / R9.3 and implementation profiles (2026-11-12). Lepus v1.4 deployed the
       same day (internal EMT servicePath reachable with `scopeQ` before: 200 → 400).
+- [x] R8.1 in the implementation profiles (2026-11-12): Lepus v1.6, deployed the same day,
+      adapts VLCi entities to SDM; audited conformance 33/33, 386/386, 538/543 (5
+      containers without location, VLCi baseline). `TrafficState` not measured yet.
 - [ ] R8.6 non-conformities: default secrets in dataspace-on-upv (F3 token revoked by its
       owner, then remove the defaults; F5).
 - [ ] R9.3: report audit finding 2 to the odrl-pap maintainers.
