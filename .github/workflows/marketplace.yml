@@ -1,0 +1,30 @@
+name: marketplace offers
+
+# Every offering published in the CitCom marketplace was generated from a class of
+# this rulebook: its policies are what the class generates for its parameters and
+# its License is the class's terms template (rulebook R2.4, R5.2). Reads the
+# marketplace's public catalogue; no registration in offers/ needed.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "37 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: every published offer matches its class
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the terms template at the rulebook commit each offer names
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: rulebook_gen audit
+        run: python -m rulebook_gen audit --marketplace https://marketplace.citcom-vrain-dataspace.eu

@@ -3,6 +3,7 @@
     python -m rulebook_gen build  [--out DIR] [--ref REF]
         writes DIR/<provider>/<offer>.credentials.json, <offer>.terms.md and rate-limits.json
     python -m rulebook_gen check  --ds-repo PATH  # diffs against dataspace-on-upv
+    python -m rulebook_gen audit  [--marketplace URL]  # every published offer vs its class
 """
 
 import argparse
@@ -12,7 +13,7 @@ import subprocess
 import sys
 import tomllib
 
-from . import limits, terms
+from . import limits, marketplace, terms
 
 from .policies import CLASSES, characteristics
 
@@ -150,6 +151,16 @@ def cmd_check(args):
     return 1 if failures else 0
 
 
+def cmd_audit(args):
+    specs = marketplace.fetch(args.marketplace, "productSpecification")
+    offerings = marketplace.fetch(args.marketplace, "productOffering")
+    results = marketplace.audit(specs, offerings)
+    for name, status, detail in results:
+        print(f"{status:8} {name}: {detail}")
+    print(f"{len(results)} offerings, {sum(s != 'OK' for _, s, _ in results)} failing")
+    return 1 if any(s != "OK" for _, s, _ in results) else 0
+
+
 def _class_of(doc):
     return doc.split("class: ", 1)[1].split("\n", 1)[0]
 
@@ -163,8 +174,10 @@ def main():
     build.add_argument("--ref", help="rulebook commit named in the terms (default: this checkout's HEAD)")
     check = sub.add_parser("check")
     check.add_argument("--ds-repo", default=ROOT.parent / "dataspace-on-upv")
+    audit = sub.add_parser("audit")
+    audit.add_argument("--marketplace", default="https://marketplace.citcom-vrain-dataspace.eu")
     args = parser.parse_args()
-    return {"build": cmd_build, "check": cmd_check}[args.cmd](args) or 0
+    return {"build": cmd_build, "check": cmd_check, "audit": cmd_audit}[args.cmd](args) or 0
 
 
 if __name__ == "__main__":

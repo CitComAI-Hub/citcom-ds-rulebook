@@ -97,6 +97,9 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       services agreements, members vs participants, data rights holders, admission
       criteria and denial reasons (R4.6, R4.7), conformity scheme and registry (R8.7,
       R8.8); open decision 10 (operator's services agreement).
+- [x] Marketplace audit (2026-11-12): `rulebook_gen audit` + daily workflow and badge;
+      every published offer checked against its class, registered or not. First run on
+      production: 6/6 OK. Next: rulebook service for the marketplace wizard (plan below).
 - [x] Roles (2026-11-12, R3.4, open decision 9 closed): meaning documented, no rename.
 - [x] Plain language (2026-11-12): the rulebook is for non-technical readers of any
       participant; classes start with what they give and ask; docs/ is the technical

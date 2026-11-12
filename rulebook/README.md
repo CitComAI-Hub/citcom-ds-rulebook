@@ -72,8 +72,9 @@ a security problem.
 
 **R2.4** Policies follow the rulebook. The access rules running on the connectors are
 generated from this repository. An access rule written by hand that this repository
-does not produce is a breach of §8 *(audited: a daily automatic comparison between this
-repository and what is deployed)*.
+does not produce is a breach of §8 *(audited: two daily automatic checks, one
+between this repository and the operator's deployment, one of every offering published
+in the marketplace against its class)*.
 
 **R2.5** Operator neutrality. The operator is also a participant. As operator:
 - it adds or removes organisations in the trust anchor only to carry out a decision of

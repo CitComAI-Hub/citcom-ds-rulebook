@@ -2,6 +2,7 @@
 
 [![policies](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/policies.yml/badge.svg?branch=main)](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/policies.yml)
 [![in sync with deployment](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/sync.yml/badge.svg?branch=main)](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/sync.yml)
+[![marketplace offers](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/marketplace.yml/badge.svg?branch=main)](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/marketplace.yml)
 ![rulebook v0.3 draft](https://img.shields.io/badge/rulebook-v0.3%20draft-lightgrey)
 
 Rules of the CitCom data space, and the code that turns them into the access
@@ -31,6 +32,7 @@ policies and the terms and conditions published on the marketplace.
 ```bash
 python -m rulebook_gen build [--ref REF]  # → build/<provider>/<offer>.credentials.json + <offer>.terms.md
 python -m rulebook_gen check             # compare with ../dataspace-on-upv (or --ds-repo PATH)
+python -m rulebook_gen audit             # every offer in the marketplace vs its class (or --marketplace URL)
 python -m unittest discover -s tests -t .
 tests/opa/run.sh                         # opa test of every offer's Rego (needs Docker)
 ```
@@ -114,6 +116,18 @@ Two workflows, each with its badge at the top of this page:
   generate a new ed25519 key, add its public half as a read-only deploy key of
   dataspace-on-upv, replace the secret, delete the old deploy key. To revoke: delete
   the deploy key.
+
+- [`marketplace offers`](.github/workflows/marketplace.yml), on every push and PR to
+  `main`, daily at 05:37 UTC and by hand: `rulebook_gen audit` reads every offering of
+  the marketplace's public catalogue and checks that it was generated from a class.
+  It reads the class and the rulebook commit from the offering's "Policy class" term,
+  reads the parameters back from its ODRL policy (provider host, offer name, path,
+  entity type, role, credential), generates the characteristics again and compares
+  them; the "License" must be the class's terms template at that commit, filled in.
+  It covers offers of any provider, registered in `offers/` or not. Limits: the
+  values a provider puts in the template's gaps (its name, the quality notes...) are
+  free text, so a clause hidden in one of them passes; and only what the anonymous
+  catalogue lists is checked (launched offerings).
 
 ## Tests of the generated Rego
 
