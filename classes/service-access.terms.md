@@ -15,7 +15,7 @@
 
 **7. Liability.** To the extent permitted by law, the Provider is not liable for any direct or indirect damage arising from the use of the Service or from the impossibility of accessing it, nor for decisions made on the basis of its results.
 
-**8. Data protection.** The Service does not contain personal data of third parties. The Provider only processes the credential identifiers and the access logs, in accordance with ${data_protection_law}, to manage access and ensure security.${data_protection_note}
+**8. Data protection.** The Service does not contain personal data of third parties. The Provider only processes the credential identifiers and the access logs, in accordance with ${data_protection_law}, to manage access and ensure security. What users enter in the Service is used only to provide the Service to them, and is not reused for any other purpose.${data_protection_note}
 
 **9. Changes.** The Provider may change the Service and these terms. Significant changes will be announced through the marketplace of the data space.
 

@@ -8,8 +8,7 @@ organisation authorises.
 **What you must do:** respect the service's terms of use, published in its offering.
 
 **What the provider must do:** not reuse, for anything else, the inputs your users give
-the service (contractual). The published terms do not say it yet (rulebook open
-decision 6).
+the service (contractual, clause 8 of the terms).
 
 The full terms published with each offering are generated from
 [`service-access.terms.md`](service-access.terms.md).

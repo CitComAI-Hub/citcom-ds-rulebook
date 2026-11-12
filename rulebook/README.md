@@ -311,6 +311,7 @@ offerings, exclusion (R4.2).
 | 2026-11-11 | Open-data offerings do not ban redistribution in their terms. Shared-data offerings keep the terms they had until their provider agrees (open decision 5). | R6.2, R7 |
 | 2026-11-12 | An offering reaches only the data it defines, whatever the consumer writes in its requests; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. | R8.5, R8.6, R9.3 |
 | 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services. | R7.5 |
+| 2026-11-12 | Service terms state that what users enter is used only to provide the service (clause 8). | R7.1 |
 | 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
 
 ## Open decisions
@@ -324,10 +325,8 @@ offerings, exclusion (R4.2).
 5. Terms of the `dataset-access` offerings: add the class's "use within CitCom
    activities only" and "delete the data on the provider's request when the order
    ends". Waiting for the provider, together with decisions 1 and 2.
-6. Terms of the `service-access` offerings: the class says the inputs users give a
-   service are not reused for anything else; the published terms do not say it yet.
-   Wording to decide (one service shows the names of what a user saves to the other
-   users of the service).
+6. ~~Terms of the `service-access` offerings~~: done 2026-11-12. Clause 8 of the terms
+   says that what users enter is used only to provide the service.
 7. R9.3 for the audit of 2026-11-11: report a vulnerability in the access-policy
    software privately to its maintainers, and tell the participants that run their own
    connector. Not done yet.
