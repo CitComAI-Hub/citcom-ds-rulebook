@@ -4,7 +4,7 @@ Rules of the CitCom data space, and the code that turns them into the access
 policies and the terms and conditions published on the marketplace.
 
 - [`rulebook/`](rulebook/README.md): the rules, written for every participant, technical
-  or not (draft v0.2), with the decisions log and the open decisions. No participant's
+  or not (draft v0.3, DSSC Blueprint v3.0), with the decisions log and the open decisions. No participant's
   datasets or deployments, and no technical detail.
 - [`classes/`](classes/): policy classes. `<class>.md` says, in plain words, what the
   class gives and asks (every offering links to it from the marketplace), then what is

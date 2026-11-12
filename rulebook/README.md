@@ -1,13 +1,14 @@
-# CitCom data space rulebook — v0.2 (draft)
+# CitCom data space rulebook — v0.3 (draft)
 
 **Status:** draft written by the VRAIN team (UPV). The first decisions were taken on
 2026-11-11 and are listed in the [decisions log](#decisions-log). The rulebook is not
 binding until the governance authority (R2.1) adopts a tagged version. Items marked
 **DECISION** are still open.
 
-The structure follows the DSSC Blueprint v2.0: governance (organisational form,
-participant management) and legal (regulatory compliance, contractual framework).
-It is cut down to what a pilot needs.
+The structure follows the DSSC Blueprint v3.0 (the final version of the DSSC project):
+governance (organisational form and governance authority, participation management)
+and legal (regulatory compliance, contractual framework). It is cut down to what a
+pilot needs.
 
 ## How to read this rulebook
 
@@ -53,7 +54,10 @@ promise production-grade availability (§10).
 **R2.1** The **governance authority** is the **CitCom.ai consortium**, acting under its
 consortium agreement, with no new legal entity (a cooperation agreement in DSSC terms).
 It adopts and changes this rulebook, admits and excludes participants, and settles
-disputes.
+disputes. The CitCom.ai partners are the data space's **members**: they govern it
+through the consortium. Any other organisation can be a **participant** (§4) without
+being a member. The consortium's own internal rules (how it decides, votes, signs) are
+in its consortium agreement, not in this rulebook.
 
 **R2.2** The **operator** runs the shared services: the trust anchor (the list of
 organisations the data space trusts), the onboarding portal, the marketplace and the
@@ -89,10 +93,12 @@ repository and what is deployed)*.
 |---|---|---|
 | **Data provider** | Publishes datasets and offers them in the marketplace | A city council offering sensor data |
 | **Service provider** | Publishes services (web apps, APIs, AI models) and offers them in the marketplace | A research centre offering a route-planning tool |
-| **Consumer** | Acquires offerings and uses the data or services, with its software (machine access) or its people (user access) | A company that reads a dataset from its own application |
-| **Operator** | See R2.2 | |
+| **Consumer** (data recipient or service user) | Acquires offerings and uses the data or services, with its software (machine access) or its people (user access) | A company that reads a dataset from its own application |
+| **Data rights holder** | Holds rights over data that a provider offers, and can set conditions on its use. It need not be a participant. | The owner of a sensor network whose data a city offers |
+| **Operator** | Provides the shared (enabling) services, see R2.2 | |
 
-A participant can hold several roles.
+A participant can hold several roles. The DSSC Blueprint calls the consumer of data a
+*data recipient*; this rulebook says *consumer* for both data and services.
 
 **R3.1** Every participant is an organisation, with a digital identity of its own (or one
 given by the onboarding portal). Individuals take part only on behalf of an
@@ -108,11 +114,18 @@ people and software it controls, and revokes them when that stops being true
 
 ## 4. Joining and leaving
 
-**R4.1** To join, an organisation registers through the onboarding portal and accepts this
-rulebook. That acceptance is the **accession agreement**. The governance authority (or
-the operator, by delegation) approves it, and the organisation is then added to the
-trust anchor *(enforced: credentials of organisations that are not in the trust anchor
-are rejected everywhere)*.
+**R4.1** To join, an organisation registers through the onboarding portal, says which
+roles it intends to take (§3), and accepts this rulebook. That acceptance is the
+**accession agreement**. The governance authority (or the operator, by delegation)
+approves it, and the organisation is then added to the trust anchor *(enforced:
+credentials of organisations that are not in the trust anchor are rejected
+everywhere)*.
+
+Admission criteria:
+- it is an organisation, able to issue credentials to its own people and software
+  (R3.1, R3.3);
+- it names a contact (R3.2);
+- to publish offerings, it meets §8 and keeps the conformance evidence of R8.7.
 
 **R4.2** A participant can leave at any time by asking the operator. The governance
 authority can exclude a participant that seriously or repeatedly breaks this rulebook
@@ -131,17 +144,32 @@ provider (for a breach, §11). The access it gave is removed automatically and n
 else is affected *(enforced)*. Orders do not expire on their own: time-limited access
 needs a class with an end date.
 
+**R4.6** The applicant is told the decision on its registration. A denial states the
+reasons, with reference to the criteria of R4.1 *(audited: the onboarding portal
+records every decision and its reason)*.
+
+**R4.7** Participants keep meeting the criteria while they take part. The operator
+checks it through the conformity scheme (R8.7) and the daily comparison of access
+rules (R2.4). A participant that stops meeting them is handled under §11.
+
 ## 5. Agreements
 
-Following the DSSC contractual framework:
+The DSSC contractual framework sorts agreements into three categories:
+**institutional** agreements bind everyone in the data space, **data-sharing**
+agreements bind only the parties to one data exchange, and **services** agreements
+cover services provided in or to the data space.
 
-| DSSC category | In this data space |
-|---|---|
-| Founding agreement | The CitCom.ai consortium agreement (R2.1). |
-| Accession agreement | Acceptance of this rulebook at onboarding (R4.1). |
-| General terms and conditions | This rulebook. |
-| Data product contract | The marketplace **order** of an offering. Its terms are those of the offering's policy class (§7) plus the provider's additional requirements (R5.3). |
-| Licence | Fixed by the policy class. Providers choose a class and do not write their own (R7.1). |
+| Category | Agreement | In this data space |
+|---|---|---|
+| Institutional | Founding agreement | The CitCom.ai consortium agreement (R2.1). |
+| Institutional | Accession agreement | Acceptance of this rulebook at onboarding (R4.1). |
+| Institutional | General terms and conditions | This rulebook, including the policy classes (§7). |
+| Data sharing | Data product contract | The marketplace **order** of a dataset offering, between provider and consumer. Its terms are those of the offering's policy class (§7) plus the provider's additional requirements (R5.3). |
+| Services | Value-creation service agreement | The marketplace **order** of a service offering (class `service-access`), between service provider and consumer. Same rules as a data product contract. |
+| Services | Enabling services agreement | The operator provides the shared services (R2.2) on behalf of the governance authority. **DECISION:** today only R2.2 and R2.5 cover it, with no written agreement (open decision 10). |
+
+The licence of every offering is fixed by its policy class. Providers choose a class
+and do not write their own (R7.1).
 
 **R5.1** An order is completed only by the provider (or, for free offerings,
 automatically). Completing it gives the consumer's organisation access to that offering,
@@ -165,7 +193,7 @@ checked automatically with a dedicated class.
 
 **R6.1** Each dataset falls into one category, chosen by its provider:
 
-| Category | What | Allowed in v0.2 |
+| Category | What | Allowed in v0.3 |
 |---|---|---|
 | **Open** | Already published as open data (e.g. under CC BY 4.0) | Yes. The data space adds service (standard formats, a verified provider), not restrictions (R6.2). |
 | **Shared** | Not public, but not personal and not confidential to third parties | Yes |
@@ -177,8 +205,9 @@ licence already grants them (Open Data Directive; for mobility and environment d
 also the High-Value Datasets regulation (EU) 2023/138). It can only ask consumers to
 identify themselves and accept the service terms of the data space *(contractual)*.
 
-**R6.3** A provider is responsible for having the right to offer each dataset, and for
-its category being correct *(contractual)*.
+**R6.3** A provider is responsible for having the right to offer each dataset, including
+the permission of its data rights holders and any conditions they set, and for its
+category being correct *(contractual)*.
 
 **R6.4** The category depends on **where the data comes from**, not on whether a similar
 dataset exists elsewhere:
@@ -257,11 +286,17 @@ it)*:
 - no test or default accounts, and no shared default passwords or keys;
 - software kept at versions without known exploitable vulnerabilities.
 
-**R8.7** Each participant keeps **conformance evidence**: how its connector and data
-meet §8 (the category of each dataset, the checks it ran and their results, known
-non-conformities and their fix). It keeps it up to date, and the operator reviews it
-before the participant's offerings are published and after relevant changes
-*(audited)*.
+**R8.7** Conformity scheme. Each participant keeps **conformance evidence**: how its
+connector and data meet §8 (the category of each dataset, the checks it ran and their
+results, known non-conformities and their fix). It keeps it up to date, and the
+operator reviews it before the participant's offerings are published and after
+relevant changes *(audited)*. The [technical annex](../docs/) says what each kind of
+connector has to show.
+
+**R8.8** Data space registry. Anyone taking part can check the rules and who takes
+part: the trust anchor lists the participants, this repository holds the rules, the
+policy classes and the conformity scheme, and the marketplace lists the offerings with
+their class.
 
 ## 9. Security and incidents
 
@@ -312,6 +347,7 @@ offerings, exclusion (R4.2).
 | 2026-11-12 | An offering reaches only the data it defines, whatever the consumer writes in its requests; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. | R8.5, R8.6, R9.3 |
 | 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services. | R7.5 |
 | 2026-11-12 | Service terms state that what users enter is used only to provide the service (clause 8). | R7.1 |
+| 2026-11-12 | Structure aligned with the DSSC Blueprint v3.0 (rulebook v0.3): agreements as institutional, data sharing and services; members and participants; data rights holders; admission criteria and reasons for a denial; conformity scheme and data space registry. | R2.1, §3, R4.1, R4.6, R4.7, §5, R6.3, R8.7, R8.8 |
 | 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
 
 ## Open decisions
@@ -335,3 +371,6 @@ offerings, exclusion (R4.2).
 9. What access roles mean. Today every offering asks for the same role, which carries
    no meaning (access is still limited to what each organisation bought). Give roles a
    meaning (levels, kinds of user) or drop them.
+10. Enabling services agreement (§5): a written agreement between the governance
+    authority and the operator for the shared services (scope, availability, what
+    happens if the operator changes, R2.5 neutrality).
