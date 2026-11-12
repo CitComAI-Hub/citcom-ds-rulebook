@@ -117,7 +117,7 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       headers removed); data routes only serve `/v1/entities{,/*}` (PR #42), which
       closes `/types?type=`. The two F1 cases under `/v1/entities/…` (forged URN,
       `/attrs/…?type=`) closed by Lepus v1.3 (PR #45, deployed 2026-11-11).
-- [x] CI (2026-11-11, `.github/workflows/ci.yml`, push/PR/daily): unit tests, build,
+- [x] CI (2026-11-11; split on 2026-11-12 into `policies.yml` and `sync.yml`, one badge each): unit tests, build,
       `tests/opa/run.sh`. Green.
 - [x] Drift job ACTIVE (2026-11-11): secret `DS_DEPLOY_KEY` = read-only deploy key
       "citcom-ds-rulebook CI (read-only)" on dataspace-on-upv. First run green: the 6

@@ -1,5 +1,9 @@
 # citcom-ds-rulebook
 
+[![policies](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/policies.yml/badge.svg?branch=main)](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/policies.yml)
+[![in sync with deployment](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/sync.yml/badge.svg?branch=main)](https://github.com/CitComAI-Hub/citcom-ds-rulebook/actions/workflows/sync.yml)
+![rulebook v0.3 draft](https://img.shields.io/badge/rulebook-v0.3%20draft-lightgrey)
+
 Rules of the CitCom data space, and the code that turns them into the access
 policies and the terms and conditions published on the marketplace.
 
@@ -77,7 +81,7 @@ To change a class, an offer or its terms, or to add an offer:
 5. Existing purchases keep the policy they got when their order was completed. A new
    policy applies to new orders only.
 
-Nobody edits the generated files in dataspace-on-upv by hand: the drift job (below)
+Nobody edits the generated files in dataspace-on-upv by hand: the sync workflow (below)
 catches it.
 
 ## How a policy reaches a request
@@ -93,16 +97,23 @@ catches it.
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml), on every push and PR to `main`,
-daily at 05:17 UTC and by hand:
+Two workflows, each with its badge at the top of this page:
 
-- **policies**: unit tests, `rulebook_gen build`, `tests/opa/run.sh`.
-- **drift**: `rulebook_gen check` against dataspace-on-upv `main`. dataspace-on-upv is
-  private: the job clones it with the secret `DS_DEPLOY_KEY`, the private half of a
-  **read-only deploy key** of dataspace-on-upv ("citcom-ds-rulebook CI (read-only)",
-  created 2026-11-11). Without the secret the job only warns. To rotate it: generate a
-  new ed25519 key, add its public half as a read-only deploy key of dataspace-on-upv,
-  replace the secret, delete the old deploy key. To revoke: delete the deploy key.
+- [`policies`](.github/workflows/policies.yml), on every push and PR to `main` and by
+  hand: unit tests, `rulebook_gen build`, `tests/opa/run.sh`.
+- [`in sync with deployment`](.github/workflows/sync.yml), on every push and PR to
+  `main`, daily at 05:17 UTC and by hand: `rulebook_gen check` against
+  dataspace-on-upv `main`. Red means the deployment repository does not use what this
+  repository generates (for example, a class changed here and the new commit is not
+  pinned there yet). It does not look at the live marketplace: the operator compares
+  the published offerings with the generated files by hand after each publication.
+  dataspace-on-upv is private: the job clones it with the secret `DS_DEPLOY_KEY`, the
+  private half of a **read-only deploy key** of dataspace-on-upv ("citcom-ds-rulebook
+  CI (read-only)", created 2026-11-11). Without the secret the job fails, except on
+  pull requests from forks (no secrets there), where it only warns. To rotate it:
+  generate a new ed25519 key, add its public half as a read-only deploy key of
+  dataspace-on-upv, replace the secret, delete the old deploy key. To revoke: delete
+  the deploy key.
 
 ## Tests of the generated Rego
 
