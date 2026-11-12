@@ -155,10 +155,13 @@ def cmd_check(args):
 def cmd_audit(args):
     specs = marketplace.fetch(args.marketplace, "productSpecification")
     offerings = marketplace.fetch(args.marketplace, "productOffering")
-    results = marketplace.audit(specs, offerings)
+    # only what can be bought: retired or obsolete offerings give no access
+    launched = [o for o in offerings if str(o.get("lifecycleStatus", "")).lower() == "launched"]
+    results = marketplace.audit(specs, launched)
     for name, status, detail in results:
         print(f"{status:8} {name}: {detail}")
-    print(f"{len(results)} offerings, {sum(s != 'OK' for _, s, _ in results)} failing")
+    print(f"{len(results)} launched offerings, {sum(s != 'OK' for _, s, _ in results)} failing"
+          f" ({len(offerings) - len(launched)} not launched, not checked)")
     return 1 if any(s != "OK" for _, s, _ in results) else 0
 
 

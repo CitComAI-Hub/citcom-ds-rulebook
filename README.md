@@ -149,8 +149,8 @@ Two workflows, each with its badge at the top of this page:
   them; the "License" must be the class's terms template at that commit, filled in.
   It covers offers of any provider, registered in `offers/` or not. Limits: the
   values a provider puts in the template's gaps (its name, the quality notes...) are
-  free text, so a clause hidden in one of them passes; and only what the anonymous
-  catalogue lists is checked (launched offerings).
+  free text, so a clause hidden in one of them passes; and only launched offerings
+  are checked (retired ones cannot be bought).
 
 ## Tests of the generated Rego
 
