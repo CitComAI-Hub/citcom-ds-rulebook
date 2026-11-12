@@ -93,6 +93,37 @@ class ServiceTest(unittest.TestCase):
             self.assertEqual(status, 400, body)
             self.assertIn("error", answer)
 
+    def test_new_role_updates_the_earlier_specs(self):
+        # vrain_upv's two services, as stored, plus a third service with a new role
+        specs, _ = published()
+        vrain = [x for x in specs if x["id"].startswith("urn:spec:vrain_upv:")]
+        status, body = self.call("/generate", {
+            "class": "service-access",
+            "provider": {"host": "vrain.citcom-vrain-dataspace.eu",
+                         "terms": {k: "x" for k in terms.template("service-access").get_identifiers()}},
+            "offer": {"name": "route-planner", "path": "/route-planner", "role": "route_planner_user"},
+            "provider_specifications": vrain,
+        })
+        self.assertEqual(status, 200, body)
+        allowed = ["container_location_user", "route_planner_user", "waste_collection_user"]
+        self.assertIn(json.dumps(allowed), json.dumps(body["characteristics"][0]))
+        self.assertEqual(sorted(u["id"] for u in body["sibling_updates"]), sorted(x["id"] for x in vrain))
+        for update in body["sibling_updates"]:
+            self.assertIn(json.dumps(allowed), json.dumps(update["characteristic"]))
+
+    def test_existing_role_needs_no_update(self):
+        specs, _ = published()
+        vrain = [x for x in specs if x["id"].startswith("urn:spec:vrain_upv:")]
+        status, body = self.call("/generate", {
+            "class": "service-access",
+            "provider": {"host": "vrain.citcom-vrain-dataspace.eu",
+                         "terms": {k: "x" for k in terms.template("service-access").get_identifiers()}},
+            "offer": {"name": "waste-collection-2", "path": "/waste-collection-2", "role": "waste_collection_user"},
+            "provider_specifications": vrain,
+        })
+        self.assertEqual(status, 200, body)
+        self.assertEqual(body["sibling_updates"], [])
+
     def test_validate_uses_the_audit(self):
         specs, offerings = published()
         status, body = self.call("/validate", {"specifications": specs, "offerings": offerings})

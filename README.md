@@ -82,8 +82,9 @@ Image: `ghcr.io/citcomai-hub/citcom-ds-rulebook-service:<commit>`, built by
 [`image.yml`](.github/workflows/image.yml) for every commit of `main` after the tests.
 Internal service, no authentication: only the marketplace's proxy reaches it.
 The verifier policy of an offer lists every role its provider grants with that
-credential type, so the caller sends the provider's other offers (`provider_offers`),
-and when a provider adds a role, its earlier offers must be generated again.
+credential type, so the caller sends the provider's stored specifications
+(`provider_specifications`); the answer lists in `sibling_updates` the earlier ones
+whose verifier policy must change because the new offer adds a role.
 
 ## How a change reaches production
 

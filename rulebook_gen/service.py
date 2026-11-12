@@ -14,9 +14,13 @@ POST /generate body:
      "provider": {"host": "acme.example.org", "terms": {"provider_name": "...", ...}},
      "offer": {"name": "bike-stations", "path": "/ngsi-ld", "entity_type": "...",
                "role": "...", "terms": {...}},
-     "provider_offers": [{"credential": "ServiceCredential", "role": "x_user"}, ...]}
-`provider_offers` are the provider's other offers: the verifier policy lists every
-role the provider grants with the same credential type (see policies.characteristics).
+     "provider_offers": [{"credential": "ServiceCredential", "role": "x_user"}, ...],
+     "provider_specifications": [<the provider's product specifications, as stored>]}
+The verifier policy lists every role the provider grants with the same credential
+type (see policies.characteristics), so the service needs the provider's other offers:
+as `provider_offers`, or as its stored `provider_specifications`, from which it reads
+them. With the specifications, the answer also lists in `sibling_updates` the earlier
+specifications whose verifier policy must change because this offer adds a role.
 """
 
 import json
@@ -27,7 +31,7 @@ import subprocess
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from . import limits, marketplace, terms
-from .policies import CLASSES, characteristics
+from .policies import CLASSES, characteristics, verifier_policy
 
 MAX_BODY = 512 * 1024
 MAX_TERM = 4000
@@ -145,7 +149,10 @@ def generate(request):
     missing = terms.missing(provider, offer)
     if missing:
         raise InvalidRequest(f"terms need {missing} in provider.terms or offer.terms")
-    siblings = []
+    specs = request.get("provider_specifications") or []
+    if not isinstance(specs, list) or not all(isinstance(x, dict) for x in specs):
+        raise InvalidRequest("provider_specifications must be a list of product specifications")
+    updates, siblings = _sibling_updates(specs, offer)
     for other in request.get("provider_offers") or []:
         if not isinstance(other, dict) or not isinstance(other.get("credential"), str) \
                 or not isinstance(other.get("role"), str) or not FIELDS["role"][1].match(other["role"]):
@@ -159,8 +166,40 @@ def generate(request):
             "Policy class": f"{cls} ({terms.REPO_URL}/blob/{ref}/classes/{cls}.md)",
         },
         "rate_limit": limits.of_offer(offer),
+        "sibling_updates": updates,
         "rulebook": ref,
     }
+
+
+def _spec_offer(spec):
+    """(credential, role) of a stored spec generated from a class, or None."""
+    odrl = marketplace._characteristic(spec, "ODRL policy")
+    if odrl is None:
+        return None
+    try:
+        policy = marketplace.canon(odrl["productSpecCharacteristicValue"])["value"]
+        permission = marketplace.canon(policy["odrl:permission"])
+        assignee = marketplace._constraints(permission["odrl:assignee"]["odrl:refinement"])
+    except (KeyError, TypeError, AttributeError):
+        return None
+    if not isinstance(assignee.get("vc:type"), str) or not isinstance(assignee.get("vc:role"), str):
+        return None
+    return {"credential": assignee["vc:type"], "role": assignee["vc:role"]}
+
+
+def _sibling_updates(specs, offer):
+    """Specs whose verifier policy must list one more role after this offer."""
+    found = [(spec, _spec_offer(spec)) for spec in specs]
+    found = [(spec, o) for spec, o in found if o and o["credential"] == offer["credential"]]
+    roles = sorted({o["role"] for _, o in found} | {offer["role"]})
+    expected = marketplace.canon(verifier_policy(offer["credential"], roles))
+    updates = []
+    for spec, _ in found:
+        current = marketplace._characteristic(spec, "Verifier policy")
+        keep = {k: (current or {}).get(k) for k in ("name", "valueType", "productSpecCharacteristicValue")}
+        if marketplace.canon(keep) != expected:
+            updates.append({"id": spec.get("id"), "characteristic": verifier_policy(offer["credential"], roles)})
+    return updates, [o for _, o in found]
 
 
 def validate(request):
