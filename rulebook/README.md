@@ -307,6 +307,7 @@ offerings, exclusion (R4.2).
 | 2026-11-11 | Notice period for rulebook changes: 30 days (security fixes exempt). | R2.3 |
 | 2026-11-11 | *Provisional:* data from public endpoints is Open; data from the provider's internal platform (Lepus) is Shared, within the data space only. | R6.4 |
 | 2026-11-11 | Offer terms are generated from the class templates, and every offering shows its class ("Policy class" term). Published the same day. | R5.2 |
+| 2026-11-12 | An offering reaches only the data it defines, whatever the consumer puts in the request; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. Profiles per stack in docs/implementation-profiles.md. | R8.5, R8.6, R9.3 |
 | 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services, counted per credential issuer. | R7.5 |
 | 2026-11-11 | traffic-state is open data (CC BY 4.0): its terms no longer ban redistribution. The other Ajuntament offers keep their published terms until the Ajuntament agrees (open decision 5). | R6.2, R7 |
 
@@ -328,3 +329,9 @@ offerings, exclusion (R4.2).
    are not reused for anything else; the published terms do not say it yet. Wording to
    decide (in the Container Location Optimizer, layout names are visible to the other
    users of the service).
+7. R9.3 for the audit of 2026-11-11: report finding 2 (odrl-pap takes `http:path` from
+   the client's `X-Stripped-Path`) privately to the odrl-pap maintainers, and tell
+   participants that run their own connector. Not done yet.
+8. R8.6 non-conformities listed in
+   [implementation-profiles](../docs/implementation-profiles.md#known-non-conformities-r86)
+   (default secrets in dataspace-on-upv).

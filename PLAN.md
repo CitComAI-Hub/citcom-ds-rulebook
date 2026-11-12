@@ -78,17 +78,23 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       when the order ends": waiting for the Ajuntament (decision 2026-11-11).
 - [ ] service-access terms lack "user inputs are not reused" (class); container-location
       shows layout names to other users: decide the wording.
-- [ ] Rate limits (R7.5, branch feat/rate-limits): `rulebook_gen/limits.py` → per provider
+- [x] Rate limits (R7.5) DEPLOYED 2026-11-12 (dataspace-on-upv PR #46; vrain connector rev 11,
+      townhall rev 10; MIAIS read checked after): `rulebook_gen/limits.py` → per provider
       `rate-limits.json` (60/min data, 600/min services, per buying organisation). Tested
       on a local APISIX 3.15 with a mock verifier (RS256 like VCVerifier): per issuer, a
       new token keeps the count, forged tokens get 401 and do not consume the victim's
       count, separate counter per route. One APISIX replica per connector, so local
-      counters are exact. dataspace-on-upv: PR + connector apply pending.
+      counters are exact.
+- [x] R8.5 / R8.6 / R9.3 and implementation profiles (2026-11-12). Lepus v1.4 deployed the
+      same day (internal EMT servicePath reachable with `scopeQ` before: 200 → 400).
+- [ ] R8.6 non-conformities: default secrets in dataspace-on-upv (F3 token revoked by its
+      owner, then remove the defaults; F5).
+- [ ] R9.3: report audit finding 2 to the odrl-pap maintainers.
 
 ## Phase 4: make it the only path
 - [x] `opa test` the generated Rego (2026-11-11, `tests/opa/run.sh`): a throwaway
       odrl-pap 1.4.10 gets every offer as contract-management sends it (one buyer per
-      offer), its bundles are tested with OPA 1.11.0. 114 cases (92 townhall_vlc, 22
+      offer), its bundles are tested with OPA 1.11.0. 118 cases (96 townhall_vlc, 22
       vrain_upv) pass. Mutation checks: `odrl:use` in dataset-access breaks the 24
       write cases; dropping the `vc:currentParty` binding breaks the other-buyer and
       stranger cases. `GAP_` tests document what OPA allows and the gateway must block

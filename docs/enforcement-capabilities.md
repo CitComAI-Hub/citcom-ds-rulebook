@@ -99,7 +99,7 @@ What the generated Rego decides, per class, with odrl-pap 1.4.10 and OPA 1.11.0:
   path, party and credential.
 
 Gaps: OPA allows them, so the gateway has to block them (`GAP_` tests). All closed on
-2026-11-11; the ones on Lepus routes only for Lepus ≥ v1.3 (never go back below it).
+2026-11-12; the ones on Lepus routes only for Lepus ≥ v1.4 (never go back below it).
 On the `/ngsi-ld` routes (Orion-LD, Scorpio) the id is the whole URN, so
 `urn:ngsi-ld:T:…` only finds entities whose id starts with that type: this holds as long
 as the provider's entity ids follow the `urn:ngsi-ld:<type>:<id>` convention (Lepus's
@@ -110,6 +110,7 @@ with other ids must say so before offering it.
 |---|---|---|---|
 | `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus sends Orion the URN's type, replacing the client's `?type=` | closed, Lepus v1.3 (dataspace-on-upv PR #45) |
 | `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus forwards the `?type=` the policy checked, Orion enforces it | closed, Lepus v1.3 (PR #45) |
+| `GET …/entities?type=T&scopeQ=<other collection>` | the policy checks the type, not the collection (Lepus maps `scopeQ` to a VLCi servicePath) | Lepus serves only the servicePaths of its map, any other `scopeQ` gets 400 | closed, Lepus v1.4 (dataspace-on-upv PR #47, deployed 2026-11-12) |
 | `GET …/types?type=T` | same fallback | data routes only serve `/v1/entities{,/*}` | closed, dataspace-on-upv PR #42 |
 | header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (and the tenant headers) | closed, dataspace-on-upv PR #39, #40 |
 

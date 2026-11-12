@@ -59,6 +59,10 @@ def dataset_access(offer):
         ("F1_attrs_with_type_query", "gap",
          _req("GET", f"{p}/v1/entities/urn:ngsi-ld:{other}:x1/attrs/a", {"type": t})),
         ("F1_types_endpoint", "gap", _req("GET", f"{p}/v1/types", {"type": t})),
+        # R8.5: the collection (Lepus: scopeQ -> servicePath) is chosen by the client and
+        # not checked by the policy; Lepus v1.4 serves only the mapped servicePaths
+        ("F1_scopeq_other_collection", "gap",
+         _req("GET", f"{p}/v1/entities", {"type": t, "scopeQ": "/internal_collection"})),
         # F2: x-stripped-path replaces the path that odrl-pap checks
         ("F2_stripped_path_header", "gap",
          _req("GET", "/other/v1/entities", {"type": t}, headers={"x-stripped-path": f"{p}/v1/entities"})),

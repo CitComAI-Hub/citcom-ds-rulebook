@@ -15,6 +15,9 @@ policies and the terms and conditions published on the marketplace.
   Rego that odrl-pap generates from every offer.
 - [`docs/enforcement-capabilities.md`](docs/enforcement-capabilities.md): what odrl-pap +
   OPA can and cannot enforce, and what the tests showed.
+- [`docs/implementation-profiles.md`](docs/implementation-profiles.md): how each kind of
+  connector (Lepus over NGSI-v2, native NGSI-LD broker, web services) meets R8.5 and
+  R8.6, and the known non-conformities.
 - [`docs/revocation-and-trust-anchor.md`](docs/revocation-and-trust-anchor.md): how access
   is revoked, and the record of trust-anchor changes.
 - [`trust-anchor-changes.md`](trust-anchor-changes.md): trust-anchor changes made by hand (R2.5).
