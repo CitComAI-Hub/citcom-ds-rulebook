@@ -124,6 +124,53 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual(status, 200, body)
         self.assertEqual(body["sibling_updates"], [])
 
+    def _pair(self, name):
+        specs, offerings = published()
+        offering = next(o for o in offerings if o["name"] == name)
+        spec = next(x for x in specs if x["id"] == offering["productSpecification"]["id"])
+        provider = name.split("/")[0]
+        others = [x for x in specs if x["id"].startswith(f"urn:spec:{provider}:")]
+        host = {"townhall_vlc": "townhall-vlc.citcom-vrain-dataspace.eu", "vrain_upv": "vrain.citcom-vrain-dataspace.eu"}[provider]
+        return host, spec, offering, others
+
+    def test_check_accepts_generated_spec_and_offering(self):
+        for name in ("townhall_vlc/waste-containers", "townhall_vlc/traffic-state", "vrain_upv/container-location"):
+            host, spec, offering, others = self._pair(name)
+            for body in ({"host": host, "specification": spec, "provider_specifications": others},
+                         {"host": host, "specification": spec, "offering": offering, "provider_specifications": others}):
+                status, answer = self.call("/check", body)
+                self.assertEqual(status, 200)
+                self.assertTrue(answer["ok"], (name, answer))
+
+    def test_check_rejects_another_providers_policy(self):
+        # a seller cannot publish a policy for someone else's connector
+        _, spec, offering, others = self._pair("vrain_upv/waste-collection")
+        status, answer = self.call("/check", {"host": "acme.example.org", "specification": spec, "offering": offering})
+        self.assertFalse(answer["ok"])
+
+    def test_check_rejects_odrl_use_on_a_dataset(self):
+        host, spec, offering, others = self._pair("townhall_vlc/air-quality")
+        text = json.dumps(spec).replace('"odrl:read"', '"odrl:use"')
+        status, answer = self.call("/check", {"host": host, "specification": json.loads(text), "provider_specifications": others})
+        self.assertFalse(answer["ok"])
+
+    def test_check_rejects_an_offering_without_class_or_with_edited_terms(self):
+        host, spec, offering, others = self._pair("vrain_upv/waste-collection")
+        bare = dict(offering, productOfferingTerm=[t for t in offering["productOfferingTerm"] if t["name"] != "Policy class"])
+        status, answer = self.call("/check", {"host": host, "specification": spec, "offering": bare, "provider_specifications": others})
+        self.assertFalse(answer["ok"])
+        edited = json.loads(json.dumps(offering).replace("is not reused for any other purpose", "may be reused"))
+        status, answer = self.call("/check", {"host": host, "specification": spec, "offering": edited, "provider_specifications": others})
+        self.assertFalse(answer["ok"])
+
+    def test_check_rejects_an_offering_on_a_spec_without_policies(self):
+        host, spec, offering, others = self._pair("vrain_upv/waste-collection")
+        draft = {"id": spec["id"], "name": "draft"}
+        status, answer = self.call("/check", {"host": host, "specification": draft})
+        self.assertTrue(answer["ok"])
+        status, answer = self.call("/check", {"host": host, "specification": draft, "offering": offering})
+        self.assertFalse(answer["ok"])
+
     def test_validate_uses_the_audit(self):
         specs, offerings = published()
         status, body = self.call("/validate", {"specifications": specs, "offerings": offerings})

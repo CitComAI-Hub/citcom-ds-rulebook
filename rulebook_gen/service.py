@@ -8,6 +8,7 @@ built from. Internal service (no authentication): only the marketplace reaches i
     GET  /classes   → the classes an offer can use, and the fields each one needs
     POST /generate  → characteristics, terms and request limit of one offer
     POST /validate  → the marketplace audit, on the specs and offerings given
+    POST /check     → one spec (and its offering) about to be written, for the proxy
 
 POST /generate body:
     {"class": "dataset-access",
@@ -202,6 +203,77 @@ def _sibling_updates(specs, offer):
     return updates, [o for _, o in found]
 
 
+def check(request):
+    """Is this spec (and offering) exactly what a class generates for this provider?
+
+    The marketplace proxy calls it before writing. Body:
+        {"host": <the provider's host, from its DID>,
+         "specification": <the spec as it will be stored>,
+         "offering": <the offering as it will be stored, optional>,
+         "provider_specifications": [<the provider's other specs>]}
+    A spec without policy characteristics passes alone (a draft), but an offering
+    always needs a spec generated from its class.
+    """
+    if not isinstance(request, dict) or not isinstance(request.get("specification"), dict):
+        raise InvalidRequest('body: {"host", "specification", "offering"?, "provider_specifications"?}')
+    host = request.get("host")
+    if not isinstance(host, str) or not HOST.match(host):
+        raise InvalidRequest("host must be the provider's host name")
+    spec = request["specification"]
+    offering = request.get("offering")
+    others = [x for x in (request.get("provider_specifications") or [])
+              if isinstance(x, dict) and x.get("id") != spec.get("id")]
+    odrl = marketplace._characteristic(spec, "ODRL policy")
+    verifier = marketplace._characteristic(spec, "Verifier policy")
+    if odrl is None and verifier is None:
+        if offering is None:
+            return {"ok": True, "problems": [], "detail": "no policy characteristics (draft)"}
+        return {"ok": False, "problems": ["an offering needs a specification generated from a rulebook class"]}
+    if offering is None:
+        # which class: the policy says it (an entity type means a dataset class; both
+        # dataset classes generate the same policies, their terms differ)
+        try:
+            policy = marketplace.canon(odrl["productSpecCharacteristicValue"])["value"]
+            permission = marketplace.canon(policy["odrl:permission"])
+            target = marketplace._constraints(permission["odrl:target"]["odrl:refinement"])
+        except (KeyError, TypeError, AttributeError):
+            return {"ok": False, "problems": ["ODRL policy not in the shape the classes generate"]}
+        cls = "dataset-access" if "ngsi-ld:entityType" in target else "service-access"
+        offering = {"name": spec.get("name"), "productOfferingTerm": [
+            {"name": "Policy class", "description": f"{cls} ({terms.REPO_URL})"}]}
+        check_terms = False
+    else:
+        check_terms = True
+    claim, reason = marketplace.read_offer(offering, spec)
+    if claim is None:
+        return {"ok": False, "problems": [reason]}
+    problems = []
+    if claim["host"] != host:
+        problems.append(f"the policy is for {claim['host']}, not for this provider ({host})")
+    offer = claim["offer"]
+    siblings = [o for o in (_spec_offer(x) for x in others) if o] + [offer]
+    try:
+        expected = characteristics({"id": host, "host": host}, offer, siblings)
+    except (KeyError, TypeError) as e:
+        return {"ok": False, "problems": [f"cannot generate {offer['class']}: missing {e}"]}
+    for c in expected:
+        published = claim["verifier"] if c["name"] == "Verifier policy" else claim["odrl"]
+        keep = {k: published.get(k) for k in ("name", "valueType", "productSpecCharacteristicValue")}
+        if marketplace.canon(keep) != marketplace.canon(c):
+            problems.append(f"{c['name']} is not what {offer['class']} generates")
+    if check_terms:
+        ref_id = marketplace.canon(offering.get("productSpecification") or {}).get("id")
+        if spec.get("id") and ref_id != spec.get("id"):
+            problems.append("the offering does not point to this specification")
+        template_text, _ = marketplace._template_at(offer["class"], claim["ref"])
+        license_text = marketplace._term(offering, "License")
+        if license_text is None:
+            problems.append("no License term")
+        elif not marketplace._matches_template(template_text, license_text):
+            problems.append(f"License is not the {offer['class']} terms template")
+    return {"ok": not problems, "problems": problems, "class": offer["class"], "offer": offer["name"]}
+
+
 def validate(request):
     if not isinstance(request, dict) or not isinstance(request.get("specifications"), list) \
             or not isinstance(request.get("offerings"), list):
@@ -232,7 +304,7 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(404, {"error": "not found"})
 
     def do_POST(self):
-        routes = {"/generate": generate, "/validate": validate}
+        routes = {"/generate": generate, "/validate": validate, "/check": check}
         if self.path not in routes:
             return self._send(404, {"error": "not found"})
         try:

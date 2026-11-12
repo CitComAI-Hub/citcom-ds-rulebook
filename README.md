@@ -76,6 +76,7 @@ generator at the commit its image was built from.
 | `GET /classes` | The classes, what each one is for, the fields it asks (name, path, entity type or role), the terms fields, the default request limit |
 | `POST /generate` | One offer's characteristics, its "License" and "Policy class" terms and its request limit. Credential and role are fixed by the class for datasets; a field outside the class is ignored; values that would add a paragraph or a clause to the terms are refused. |
 | `POST /validate` | The marketplace audit (`rulebook_gen audit`) on the specifications and offerings sent |
+| `POST /check` | Before the marketplace proxy writes a spec or an offering: is it exactly what a class generates **for this provider** (host from its DID)? A spec without policies passes as a draft; an offering always needs a generated spec and its class's terms. |
 | `GET /health` | Status and rulebook commit |
 
 Image: `ghcr.io/citcomai-hub/citcom-ds-rulebook-service:<commit>`, built by
