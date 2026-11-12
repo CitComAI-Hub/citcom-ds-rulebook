@@ -1,28 +1,44 @@
 # dataset-access
 
-Access for the buying organisation's machines to one *shared* (not open) NGSI-LD
-entity type (rulebook R6.4: data from the provider's internal platform, e.g. VLCi
-through Lepus). Today: waste-containers, air-quality, traffic-flow. The provider may
-add requirements such as liability insurance (R5.3).
+**For:** *shared* datasets: not public, but not personal and not confidential
+(rulebook R6.1, R6.4). The provider may add requirements, such as civil liability
+insurance (R5.3).
 
-**Terms (rulebook §7):** use within CitCom activities only; do not share the raw data
-outside the data space; attribute the provider; delete the data on the provider's
-request when the order ends. All of these are contractual.
+**What you get:** read access, through the data space, to one dataset, for your
+organisation's software.
 
-| Term | Kind | How |
-|---|---|---|
-| Only the buying organisation | enforced | `vc:currentParty == buyer DID` (added by contract-management) |
-| Only machine clients | enforced | `vc:type hasPart MachineCredential` |
-| Only this dataset | enforced | `http:path isInPath <path>` AND `ngsi-ld:entityType eq <type>` |
-| Read only | enforced | `odrl:read` (GET only) + `methods: ["GET"]` on the APISIX route |
-| Only entity reads | enforced | APISIX data routes serve only `/v1/entities` and `/v1/entities/*` (dataspace-on-upv PR #42); client `X-Stripped-Path` and tenant headers removed (PR #40) |
-| Fair use: 60 requests per minute per buying organisation (R7.5) | enforced | APISIX `limit-count` on the route, keyed by the credential issuer; 429 over the limit |
+**What you must do:**
+- use the data within CitCom activities only;
+- not share the raw data outside the data space;
+- say who the provider is;
+- delete the data if the provider asks when the order ends.
 
-**Published terms today:** the offers keep the terms published before the class
-existed. They do not yet include "within CitCom activities only" nor the deletion duty
-(rulebook open decision 5).
+The software cannot check these duties: they are contractual (R7.2).
 
-Terms and conditions published with each offer: [`dataset-access.terms.md`](dataset-access.terms.md),
-filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.
+The full terms published with each offering are generated from
+[`dataset-access.terms.md`](dataset-access.terms.md). The offerings published before
+this class existed do not include "within CitCom activities only" nor the deletion
+duty yet (rulebook open decision 5).
 
-Parameters: `path`, `entity_type`, `credential`, `role`.
+## What the software enforces
+
+| Term | Kind |
+|---|---|
+| Only the organisation that acquired the offering | enforced |
+| Only software of that organisation (machine access) | enforced |
+| Only this dataset | enforced |
+| Read only | enforced |
+| Fair use: 60 requests per minute per organisation (R7.5) | enforced |
+| Within CitCom, no sharing outside, attribution, deletion | contractual |
+
+### Technical detail
+
+| Term | How |
+|---|---|
+| Only the buying organisation | `vc:currentParty == buyer DID` (added by contract-management on purchase) |
+| Only machine access | `vc:type hasPart MachineCredential` |
+| Only this dataset | `http:path isInPath <path>` AND `ngsi-ld:entityType eq <type>`; the connector must block what the policy cannot see ([implementation profiles](../docs/implementation-profiles.md)) |
+| Read only | `odrl:read` (GET only) and GET-only gateway routes |
+| Fair use | gateway request limit on the offering's route, counted per credential issuer; HTTP 429 over the limit |
+
+Parameters in `offers/`: `path`, `entity_type`, `credential`, `role`.

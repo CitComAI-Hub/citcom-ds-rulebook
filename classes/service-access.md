@@ -1,21 +1,36 @@
 # service-access
 
-Access for the buying organisation's people to a web or API service.
+**For:** services (web applications, APIs, AI models) offered through the data space.
 
-**Terms (rulebook §7):** the service's terms of use, in its offering. Inputs users give
-the service are not reused for anything else (contractual).
+**What you get:** access to one service for the people of your organisation that your
+organisation authorises.
 
-| Term | Kind | How |
-|---|---|---|
-| Only users of the buying organisation | enforced | `vc:currentParty == buyer DID` (added by contract-management) |
-| Only users the buyer allowed | enforced | `vc:role hasPart <role>` AND `vc:type hasPart ServiceCredential` |
-| Only this service | enforced | `http:path isInPath <path>` |
-| Fair use: 600 requests per minute per buying organisation (R7.5) | enforced | APISIX `limit-count` on the route, keyed by the credential issuer; 429 over the limit |
+**What you must do:** respect the service's terms of use, published in its offering.
 
-**Published terms today:** they do not yet say that user inputs are not reused
-(rulebook open decision 6).
+**What the provider must do:** not reuse, for anything else, the inputs your users give
+the service (contractual). The published terms do not say it yet (rulebook open
+decision 6).
 
-Terms and conditions published with each offer: [`service-access.terms.md`](service-access.terms.md),
-filled with the `[provider.terms]` / `[offer.terms]` values of `offers/*.toml`.
+The full terms published with each offering are generated from
+[`service-access.terms.md`](service-access.terms.md).
 
-Parameters: `path`, `credential`, `role`.
+## What the software enforces
+
+| Term | Kind |
+|---|---|
+| Only people of the organisation that acquired the offering | enforced |
+| Only the people that organisation authorised | enforced |
+| Only this service | enforced |
+| Fair use: 600 requests per minute per organisation (R7.5) | enforced |
+| Inputs not reused | contractual |
+
+### Technical detail
+
+| Term | How |
+|---|---|
+| Only the buying organisation | `vc:currentParty == buyer DID` (added by contract-management on purchase) |
+| Only authorised people | `vc:role hasPart <role>` AND `vc:type hasPart ServiceCredential` |
+| Only this service | `http:path isInPath <path>` |
+| Fair use | gateway request limit on the offering's route, counted per credential issuer; HTTP 429 over the limit |
+
+Parameters in `offers/`: `path`, `credential`, `role`.

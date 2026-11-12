@@ -92,7 +92,10 @@ How to change something: [README](README.md#how-a-change-reaches-production).
       containers without location, VLCi baseline). `TrafficState` not measured yet.
 - [x] Profiles made generic (2026-11-12): participant evidence (dataset categories,
       versions, audit results, non-conformities) moved to `CONFORMANCE.md` in
-      dataspace-on-upv (branch `docs/conformance`).
+      dataspace-on-upv (PR #49, merged).
+- [x] Plain language (2026-11-12): the rulebook is for non-technical readers of any
+      participant; classes start with what they give and ask; docs/ is the technical
+      annex, generic; new R8.7 (conformance evidence) and open decision 9 (roles).
 - [ ] R8.6 non-conformities: default secrets in dataspace-on-upv (F3 token revoked by its
       owner, then remove the defaults; F5).
 - [ ] R9.3: report audit finding 2 to the odrl-pap maintainers.

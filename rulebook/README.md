@@ -9,16 +9,27 @@ The structure follows the DSSC Blueprint v2.0: governance (organisational form,
 participant management) and legal (regulatory compliance, contractual framework).
 It is cut down to what a pilot needs.
 
+## How to read this rulebook
+
+This document is for every participant, technical or not. It says **what** holds in
+the data space, not how the software does it. Three other places complete it:
+
+- **Policy classes** ([`classes/`](../classes/)): the terms of use of each kind of
+  offering. Every offering in the marketplace links to its class.
+- **Technical annex** ([`docs/`](../docs/)): how the software enforces these rules,
+  for the people who run a connector.
+- **Each participant's conformance evidence**: how its own connector and data meet
+  §8, kept by the participant and reviewed by the operator.
+
 Every rule has an id and one of three kinds:
 
 | Kind | Meaning |
 |---|---|
-| **enforced** | Checked on every request by the connectors (APISIX + OPA, from ODRL). See [enforcement-capabilities](../docs/enforcement-capabilities.md). |
-| **audited** | Not blocked, but logged or checkable afterwards. Breaking it has consequences under §11. |
+| **enforced** | The data space's software checks it on every access and blocks what breaks it. |
+| **audited** | Not blocked, but recorded or checkable afterwards. Breaking it has consequences under §11. |
 | **contractual** | An obligation of the parties. No system checks it. |
 
-A rule is only labelled *enforced* if the code in this repo generates the policy
-that enforces it.
+A rule is only labelled *enforced* if the software really blocks what breaks it.
 
 ---
 
@@ -26,15 +37,13 @@ that enforces it.
 
 **R1.1** The CitCom data space lets cities, research centres and companies taking part
 in CitCom.ai share urban data and AI services in a trusted and controlled way. It is
-open to any organisation that meets §4. The first participants (early adopters) are
-the Ajuntament de València and VRAIN (UPV), but no rule depends on who they are: they
-have the same rights and duties as any later participant, except for VRAIN's role as
-operator (R2.2, R2.5).
+open to any organisation that meets §4. The first participants (early adopters) have
+the same rights and duties as any later participant. The only exception is the
+operator's role (R2.2, R2.5).
 
 **R1.2** This rulebook covers the participants, the data and services offered through the
-data space connectors and the CitCom marketplace, and the terms under which they are
-used. It does not cover data exchanged outside the data space, even between the same
-participants.
+data space and its marketplace, and the terms under which they are used. It does not
+cover data exchanged outside the data space, even between the same participants.
 
 **R1.3** The data space is a **pilot** (testing and experimentation facility). It does not
 promise production-grade availability (§10).
@@ -46,82 +55,81 @@ consortium agreement, with no new legal entity (a cooperation agreement in DSSC 
 It adopts and changes this rulebook, admits and excludes participants, and settles
 disputes.
 
-**R2.2** The **operator** runs the shared services: trust anchor (trusted issuers
-registry), onboarding portal, marketplace and documentation. It acts on behalf of the
-governance authority. The operator is **VRAIN (UPV)**. In practice VRAIN controls the
-trust anchor, so it decides technically who can take part (R2.5 limits that power).
+**R2.2** The **operator** runs the shared services: the trust anchor (the list of
+organisations the data space trusts), the onboarding portal, the marketplace and the
+documentation. It acts on behalf of the governance authority. The operator is
+**VRAIN (UPV)**. In practice the operator controls the trust anchor, so it decides
+technically who can take part (R2.5 limits that power).
 
-**R2.3** Changes: a change to this rulebook is a pull request to this repository,
-approved by the governance authority. Each adopted version is tagged (`rulebook-vX.Y`)
-and announced to participants at least **30 days** before it takes effect, unless it
-fixes a security problem.
+**R2.3** Changes: a change to this rulebook is proposed in this repository and approved
+by the governance authority. Each adopted version is tagged (`rulebook-vX.Y`) and
+announced to participants at least **30 days** before it takes effect, unless it fixes
+a security problem.
 
-**R2.4** Policies follow the rulebook. The access policies deployed on the connectors
-are generated from this repository (`offers/` + `classes/`). A connector policy written
-by hand that this repository does not produce is a breach of §8 *(audited:
-`rulebook_gen check`, run daily by this repository's CI against dataspace-on-upv)*.
+**R2.4** Policies follow the rulebook. The access rules running on the connectors are
+generated from this repository. An access rule written by hand that this repository
+does not produce is a breach of §8 *(audited: a daily automatic comparison between this
+repository and what is deployed)*.
 
-**R2.5** Operator neutrality. VRAIN is both the operator and a participant. As operator:
-- it adds or removes issuers in the trust anchor only to carry out a decision of the
-  governance authority, or R4.1 / R4.3 / R9.1;
+**R2.5** Operator neutrality. The operator is also a participant. As operator:
+- it adds or removes organisations in the trust anchor only to carry out a decision of
+  the governance authority, or R4.1 / R4.3 / R9.1;
 - it treats every participant the same way, including itself;
 - it does not use its position to access other participants' data or services;
 - it keeps a record of every change to the trust anchor (who, when, why) and shares it
-  with the governance authority on request *(audited: database audit log on the trust
-  anchor, plus portal history; to be set up, see
-  [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md))*;
+  with the governance authority on request *(audited: the trust anchor and the
+  onboarding portal keep a history of changes)*;
 - changes it makes by hand, outside the onboarding portal, are only for early adopters
-  or emergencies, and are written down in `trust-anchor-changes.md` in this repository.
+  or emergencies, and are written down in
+  [`trust-anchor-changes.md`](../trust-anchor-changes.md).
 
 ## 3. Participants and roles
 
-| Role | Does | Example (early adopters) |
+| Role | Does | Example |
 |---|---|---|
-| **Data provider** | Publishes datasets through its connector and offers them in the marketplace | Ajuntament de València |
-| **Service provider** | Publishes services (web apps, APIs, AI models) through its connector | VRAIN (MIAIS, waste collection, container location) |
-| **Consumer** | Acquires offers and uses data or services, with its machines (MachineCredential) or its people (ServiceCredential) | VRAIN reading waste containers |
-| **Operator** | See R2.2 | VRAIN |
+| **Data provider** | Publishes datasets and offers them in the marketplace | A city council offering sensor data |
+| **Service provider** | Publishes services (web apps, APIs, AI models) and offers them in the marketplace | A research centre offering a route-planning tool |
+| **Consumer** | Acquires offerings and uses the data or services, with its software (machine access) or its people (user access) | A company that reads a dataset from its own application |
+| **Operator** | See R2.2 | |
 
 A participant can hold several roles.
 
-**R3.1** Every participant is an organisation, identified by a `did:web` (its own, or one
+**R3.1** Every participant is an organisation, with a digital identity of its own (or one
 given by the onboarding portal). Individuals take part only on behalf of an
-organisation *(enforced: credentials are issued by the organisation's Keycloak and
-policies bind to its DID)*.
+organisation *(enforced: each organisation issues the credentials of its own people
+and software, and every access is tied to the organisation)*.
 
 **R3.2** Each participant names a **contact** for operations and security incidents
 *(contractual)*.
 
 **R3.3** A participant answers for its users and machines. It only issues credentials to
-people and services it controls, and revokes them when that stops being true
+people and software it controls, and revokes them when that stops being true
 *(contractual)*.
 
 ## 4. Joining and leaving
 
 **R4.1** To join, an organisation registers through the onboarding portal and accepts this
 rulebook. That acceptance is the **accession agreement**. The governance authority (or
-the operator, by delegation) approves it, and the organisation's issuer is then added
-to the trusted issuers registry *(enforced: credentials of non-registered issuers are
-rejected by every verifier)*.
+the operator, by delegation) approves it, and the organisation is then added to the
+trust anchor *(enforced: credentials of organisations that are not in the trust anchor
+are rejected everywhere)*.
 
 **R4.2** A participant can leave at any time by asking the operator. The governance
 authority can exclude a participant that seriously or repeatedly breaks this rulebook
 (§11).
 
 **R4.3** On leaving or exclusion, the operator removes the participant from the trust
-anchor (onboarding portal: registration out of `active`) *(enforced: from then on every
-verifier rejects its credentials)*. Within **5 working days**, its orders as a consumer
-are set to `cancelled`, which removes its entries from the providers' trusted issuers
-lists and its access policies *(enforced by contract-management once cancelled;
-audited)*. Details: [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md).
-
-**R4.5** A single purchase ends by setting its order to `cancelled`, either by the
-consumer or by the provider (for a breach, §11). Access to that offering is revoked
-automatically and nothing else is affected *(enforced)*. Orders do not expire on their
-own. Time-limited access needs a class with an end date.
+anchor *(enforced: from then on its credentials are rejected everywhere)*. Within
+**5 working days**, its purchases as a consumer are cancelled, which also removes the
+access each of them gave *(enforced once cancelled; audited)*.
 
 **R4.4** Leaving does not end obligations that apply to data already received, such as
 attribution, confidentiality or deletion (§7) *(contractual)*.
+
+**R4.5** A single purchase ends when its order is cancelled, by the consumer or by the
+provider (for a breach, §11). The access it gave is removed automatically and nothing
+else is affected *(enforced)*. Orders do not expire on their own: time-limited access
+needs a class with an end date.
 
 ## 5. Agreements
 
@@ -135,15 +143,13 @@ Following the DSSC contractual framework:
 | Data product contract | The marketplace **order** of an offering. Its terms are those of the offering's policy class (§7) plus the provider's additional requirements (R5.3). |
 | Licence | Fixed by the policy class. Providers choose a class and do not write their own (R7.1). |
 
-**R5.1** An order is completed only by the provider (or, for free offers, automatically).
-Completing it creates the consumer's access *(enforced: contract-management adds the
-consumer to the provider's trusted issuers list and instantiates the class policy bound
-to the consumer's DID)*.
+**R5.1** An order is completed only by the provider (or, for free offerings,
+automatically). Completing it gives the consumer's organisation access to that offering,
+and to nothing else *(enforced)*.
 
-**R5.2** Every offering states its policy class and links to it *(audited)*. Its terms and
-conditions are generated from the class template (`classes/<class>.terms.md`), so they
-cannot contradict the class; the offering carries them as its "License" term and the
-class, with a link to this repository at the commit used, as its "Policy class" term.
+**R5.2** Every offering states its policy class and links to it *(audited)*. Its terms
+and conditions are generated from the class, so they cannot contradict it. The
+marketplace shows them as the offering's "License" and its class as "Policy class".
 
 **R5.3** A provider can set **additional requirements** for an offering, for example
 civil liability insurance, a signed agreement or a declared purpose of use. They must:
@@ -152,16 +158,16 @@ civil liability insurance, a signed agreement or a declared purpose of use. They
 - apply equally to every consumer of that offering.
 
 The provider checks them before completing the order *(contractual)*. Requirements
-that can be expressed as a credential claim (e.g. an insurance attestation) can later
-be enforced with a dedicated class (`ovc:leftOperand`, see PLAN).
+that a credential can prove (for example, an insurance certificate) can later be
+checked automatically with a dedicated class.
 
 ## 6. Data categories
 
 **R6.1** Each dataset falls into one category, chosen by its provider:
 
-| Category | What | Allowed in v0.1 |
+| Category | What | Allowed in v0.2 |
 |---|---|---|
-| **Open** | Already published as open data (e.g. under CC BY 4.0) | Yes. The data space adds service (NGSI-LD, Smart Data Models, a verified provider), not restrictions (R6.2). |
+| **Open** | Already published as open data (e.g. under CC BY 4.0) | Yes. The data space adds service (standard formats, a verified provider), not restrictions (R6.2). |
 | **Shared** | Not public, but not personal and not confidential to third parties | Yes |
 | **Confidential** | Trade secrets, security-relevant infrastructure details | No, until rules for it are agreed |
 | **Personal** | Personal data (GDPR) | No. Any dataset that may contain personal data must be anonymised before it is offered. |
@@ -169,23 +175,23 @@ be enforced with a dedicated class (`ovc:leftOperand`, see PLAN).
 **R6.2** Open data stays open. The data space cannot add usage restrictions to data whose
 licence already grants them (Open Data Directive; for mobility and environment data,
 also the High-Value Datasets regulation (EU) 2023/138). It can only ask consumers to
-identify themselves and accept the service terms of the connector *(contractual)*.
+identify themselves and accept the service terms of the data space *(contractual)*.
 
 **R6.3** A provider is responsible for having the right to offer each dataset, and for
 its category being correct *(contractual)*.
 
 **R6.4** The category depends on **where the data comes from**, not on whether a similar
 dataset exists elsewhere:
-- data the data space takes from a provider's **public endpoint** is **Open**;
+- data the data space takes from a provider's **public source** is **Open**;
 - data it takes from a provider's **internal platform** is **Shared**. A similar
   dataset may be on an open data portal, but that feed (frequency, attributes,
   history) is not the public one.
 
-*Provisional:* the Ajuntament and VRAIN are still agreeing on this. Until they do, R6.4
+*Provisional:* still being agreed with the first data provider. Until then, R6.4
 applies.
 
-Each provider records the category of its datasets, and why, in its conformance
-evidence (see [implementation-profiles](../docs/implementation-profiles.md)).
+Each provider records the category of each of its datasets, and why, in its
+conformance evidence (§8).
 
 ## 7. Usage terms (policy classes)
 
@@ -194,67 +200,68 @@ rulebook (R2.3).
 
 | Class | For | Who | What | Licence and duties |
 |---|---|---|---|---|
-| [`open-data`](../classes/open-data.md) | Open datasets | Any participant that acquires it (free) | Read (GET) one entity type | The source's open licence (CC BY 4.0: attribute the provider). No extra restrictions (R6.2). |
-| [`dataset-access`](../classes/dataset-access.md) | Shared datasets | The acquiring organisation's machines | Read (GET) one entity type | Use within CitCom activities only; do not share raw data outside the data space; attribute the provider; delete on request at the end of the order. |
-| [`service-access`](../classes/service-access.md) | Services | The acquiring organisation's users, given the service role by their organisation | The service under its path | The service's terms of use (in its offering). Inputs the user gives the service are not reused for anything else. |
+| [`open-data`](../classes/open-data.md) | Open datasets | Any participant that acquires it (free) | Read one dataset | The source's open licence (CC BY 4.0: attribute the provider). No extra restrictions (R6.2). |
+| [`dataset-access`](../classes/dataset-access.md) | Shared datasets | The acquiring organisation's software | Read one dataset | Use within CitCom activities only; do not share raw data outside the data space; attribute the provider; delete on request at the end of the order. |
+| [`service-access`](../classes/service-access.md) | Services | The people of the acquiring organisation that it authorises | Use one service | The service's terms of use (in its offering). Inputs the user gives the service are not reused for anything else. |
 
 **R7.2** What each class *enforces* is listed in its file. Everything else in the table is
 *contractual*. In particular, attribution, "within CitCom" and deletion cannot be
-checked by the connectors.
+checked by the software.
 
-**R7.3** Consumers access data **read only**. Writing to a provider's data is not possible
-through any offering *(enforced: `odrl:read` and GET-only routes)*.
+**R7.3** Consumers access data **read only**. No offering lets anyone change or delete a
+provider's data *(enforced)*.
 
 **R7.4** Results derived from data (aggregates, models, maps) belong to whoever produces
 them, but must attribute the source and must not let anyone rebuild the raw data of a
 *shared* dataset *(contractual)*.
 
 **R7.5** Fair use. Each class sets how many requests a buying organisation can make to
-an offer's route in a time window: 60 per minute for data (`open-data`,
-`dataset-access`), 600 per minute for services (`service-access`, whose pages load
-their assets through the route). A provider can set a different limit for an offer in
-`offers/`. Requests over the limit get HTTP 429 *(enforced: APISIX `limit-count` on the
-provider's route, counted per issuer of the buyer's credential, so a new token does
-not reset it; generated in `rate-limits.json`)*.
+an offering in a time window: 60 per minute for data (`open-data`, `dataset-access`),
+600 per minute for services (`service-access`, because a web page makes many requests).
+A provider can set a different limit for one of its offerings. Requests over the limit
+are refused until the window ends *(enforced: counted per buying organisation, so
+logging in again does not reset the count)*.
 
 ## 8. Technical rules
 
-**R8.1** Data is offered as NGSI-LD, following Smart Data Models where one exists.
+The [technical annex](../docs/) explains how each kind of software meets these rules.
 
-**R8.2** Identity and access use the CitCom trust framework: `did:web`, verifiable
-credentials (OID4VCI / OID4VP), the trust anchor's registry, and each provider's
-trusted issuers list *(enforced)*.
+**R8.1** Data is offered in the data space's standard format (NGSI-LD) and follows the
+common data models for cities (Smart Data Models) where one exists *(audited: the
+provider checks its data against the official models)*.
 
-**R8.3** Each connector exposes only what its offerings need, and its gateway routes must
-not allow more than the classes allow (for example, no write methods on data routes)
-*(audited: operator's route review)*.
+**R8.2** Identity and access use the CitCom trust framework: digital identities and
+verifiable credentials, the trust anchor, and each provider's list of the organisations
+that bought from it *(enforced)*.
 
-**R8.4** Access policies are produced by this repository and deployed through the
+**R8.3** Each connector exposes only what its offerings need, and never allows more than
+the classes allow (for example, nobody can write to a provider's data) *(audited: the
+operator reviews it)*.
+
+**R8.4** Access rules are produced by this repository and deployed through the
 marketplace (R2.4).
 
-**R8.5** Each offering defines precisely the data it covers: the entity type and what
-delimits it within the provider's systems (source, area, sub-collection). The access an
-offering grants must not reach data outside that definition, **whatever the consumer
-puts in the request** (query parameters, headers, entity ids, paths). Data that is not
-offered must not be reachable through the data space, and new data the provider's
-systems start publishing is not served until it is assigned to an offering
-*(audited: each participant shows how it meets this in its conformance evidence,
-following the [implementation profile](../docs/implementation-profiles.md) of its
-stack)*.
+**R8.5** Each offering defines precisely the data it covers: what kind of data and what
+delimits it within the provider's systems (source, area, collection). The access an
+offering gives must not reach data outside that definition, **whatever the consumer
+writes in its requests**. Data that is not offered must not be reachable through the
+data space, and new data that the provider's systems start publishing is not served
+until it is assigned to an offering *(audited)*.
 
-**R8.6** Minimum security baseline for every connector *(audited: operator's review and
-conformance checks)*:
-- data routes are read only and expose only the endpoints the offerings need (R7.3,
+**R8.6** Minimum security baseline for every connector *(audited: the operator reviews
+it)*:
+- data can only be read, and only the parts the offerings need are exposed (R7.3,
   R8.3);
-- an access decision never relies on a value the consumer controls (a header, a
-  parameter, the type written in an id) unless the system behind the gateway enforces
-  that same value; values the gateway or the policy engine trust are removed from
-  incoming requests;
-- no test or default accounts and no shared default secrets;
-- components at versions without known exploitable vulnerabilities.
+- an access decision never relies on information the consumer can change, unless the
+  system behind the connector checks that same information;
+- no test or default accounts, and no shared default passwords or keys;
+- software kept at versions without known exploitable vulnerabilities.
 
-A participant that does not use the operator's connector configuration shows how it
-meets the baseline before its offerings are published.
+**R8.7** Each participant keeps **conformance evidence**: how its connector and data
+meet §8 (the category of each dataset, the checks it ran and their results, known
+non-conformities and their fix). It keeps it up to date, and the operator reviews it
+before the participant's offerings are published and after relevant changes
+*(audited)*.
 
 ## 9. Security and incidents
 
@@ -262,12 +269,12 @@ meets the baseline before its offerings are published.
 space tells the operator and the affected providers within **72 hours** *(contractual)*.
 The operator can suspend any access while it is handled.
 
-**R9.2** Credentials and tokens are not shared between organisations *(partly enforced:
-policies bind to the issuing organisation)*.
+**R9.2** Credentials are not shared between organisations *(partly enforced: access is
+tied to the organisation that issued the credential)*.
 
-**R9.3** When the operator learns of a vulnerability in a component that several
-connectors share, it tells every participant that runs it, with the fix or the
-mitigation, and reports it privately to the component's maintainers. It does not
+**R9.3** When the operator learns of a vulnerability in software that several
+participants run, it tells every participant that runs it, with the fix or the
+mitigation, and reports it privately to the software's maintainers. It does not
 publish exploit details before a fix is available *(contractual)*.
 
 ## 10. Availability and liability
@@ -277,11 +284,11 @@ availability or quality guarantees, because this is a pilot. An offering can pro
 more in its description.
 
 **R10.2** **DECISION (sensitive, in progress):** liability between participants is not
-settled. The Ajuntament, as a provider like any other, is likely to ask consumers of
-its Lepus data for civil liability insurance and other conditions (R5.3). The general
-clause is being worked out with the Ajuntament and the partners' legal services. Until
-then there is no general liability clause: R10.1 and each offering's additional
-requirements apply.
+settled. Providers of shared data are likely to ask their consumers for civil
+liability insurance and other conditions (R5.3). The general clause is being worked
+out with the first data provider and the partners' legal services. Until then there
+is no general liability clause: R10.1 and each offering's additional requirements
+apply.
 
 ## 11. Breaches and disputes
 
@@ -299,33 +306,33 @@ offerings, exclusion (R4.2).
 |---|---|---|
 | 2026-11-11 | Governance authority: the CitCom.ai consortium, under its consortium agreement. Operator: VRAIN, which controls the trust anchor. | R2.1, R2.2, R2.5, §5 |
 | 2026-11-11 | Notice period for rulebook changes: 30 days (security fixes exempt). | R2.3 |
-| 2026-11-11 | *Provisional:* data from public endpoints is Open; data from the provider's internal platform (Lepus) is Shared, within the data space only. | R6.4 |
-| 2026-11-11 | Offer terms are generated from the class templates, and every offering shows its class ("Policy class" term). Published the same day. | R5.2 |
-| 2026-11-12 | An offering reaches only the data it defines, whatever the consumer puts in the request; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. Profiles per stack in docs/implementation-profiles.md. | R8.5, R8.6, R9.3 |
-| 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services, counted per credential issuer. | R7.5 |
-| 2026-11-12 | The rulebook and its implementation profiles are generic and name no participant's datasets or deployments. Each participant keeps its conformance evidence in its own repository (for the operator's deployment, `CONFORMANCE.md` in dataspace-on-upv). | R6.4, R8.5, R8.6 |
-| 2026-11-11 | traffic-state is open data (CC BY 4.0): its terms no longer ban redistribution. The other Ajuntament offers keep their published terms until the Ajuntament agrees (open decision 5). | R6.2, R7 |
+| 2026-11-11 | *Provisional:* data from a provider's public source is Open; data from its internal platform is Shared, within the data space only. | R6.4 |
+| 2026-11-11 | Offering terms are generated from the class templates, and every offering shows its class ("Policy class"). | R5.2 |
+| 2026-11-11 | Open-data offerings do not ban redistribution in their terms. Shared-data offerings keep the terms they had until their provider agrees (open decision 5). | R6.2, R7 |
+| 2026-11-12 | An offering reaches only the data it defines, whatever the consumer writes in its requests; minimum security baseline for every connector; shared vulnerabilities are reported to participants and maintainers. | R8.5, R8.6, R9.3 |
+| 2026-11-12 | Request limits per buying organisation: 60/min for data, 600/min for services. | R7.5 |
+| 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
 
 ## Open decisions
 
-1. Final agreement with the Ajuntament on R6.4 (category by source).
-2. Liability between participants and the Ajuntament's requirements for its Lepus data
-   (insurance, others) (R10.2, R5.3). Sensitive, in progress.
-3. ~~Automatic revocation (R4.3)~~: investigated 2026-11-11. It exists per order
-   (cancel the order) and per participant (deactivate in the portal). R4.3 and R4.5
-   are rewritten. Verified end to end on 2026-11-11.
-4. ~~Trust-anchor change record (R2.5)~~: deployed 2026-11-11 (audit log of the TIR/TIL
-   database, portal registration history), see
-   [revocation-and-trust-anchor](../docs/revocation-and-trust-anchor.md).
-5. Terms of the `dataset-access` offers (Ajuntament data through Lepus): add the class's
-   "use within CitCom activities only" and "delete the data on the provider's request
-   when the order ends". Waiting for the Ajuntament, together with decisions 1 and 2.
-6. Terms of the `service-access` offers: the class says the inputs users give a service
-   are not reused for anything else; the published terms do not say it yet. Wording to
-   decide (in the Container Location Optimizer, layout names are visible to the other
+1. Final agreement on R6.4 (category by source) with the first data provider.
+2. Liability between participants, and the requirements providers of shared data may
+   set (insurance, others) (R10.2, R5.3). Sensitive, in progress.
+3. ~~Automatic revocation (R4.3)~~: done 2026-11-11. It works per purchase (cancel the
+   order) and per participant (remove it from the trust anchor). Verified end to end.
+4. ~~Record of trust-anchor changes (R2.5)~~: done 2026-11-11.
+5. Terms of the `dataset-access` offerings: add the class's "use within CitCom
+   activities only" and "delete the data on the provider's request when the order
+   ends". Waiting for the provider, together with decisions 1 and 2.
+6. Terms of the `service-access` offerings: the class says the inputs users give a
+   service are not reused for anything else; the published terms do not say it yet.
+   Wording to decide (one service shows the names of what a user saves to the other
    users of the service).
-7. R9.3 for the audit of 2026-11-11: report finding 2 (odrl-pap takes `http:path` from
-   the client's `X-Stripped-Path`) privately to the odrl-pap maintainers, and tell
-   participants that run their own connector. Not done yet.
-8. R8.6 non-conformities of the operator's deployment (default secrets), listed in
-   `CONFORMANCE.md` in dataspace-on-upv.
+7. R9.3 for the audit of 2026-11-11: report a vulnerability in the access-policy
+   software privately to its maintainers, and tell the participants that run their own
+   connector. Not done yet.
+8. Known non-conformities of the operator's own deployment (default secrets), listed
+   in its conformance evidence.
+9. What access roles mean. Today every offering asks for the same role, which carries
+   no meaning (access is still limited to what each organisation bought). Give roles a
+   meaning (levels, kinds of user) or drop them.

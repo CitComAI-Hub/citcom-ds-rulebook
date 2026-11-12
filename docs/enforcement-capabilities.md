@@ -1,7 +1,7 @@
 # What the FIWARE stack can enforce
 
-Inventory made on 2026-11-11 by reading the source code of the versions deployed in
-dataspace-on-upv: **odrl-pap 1.4.10** (`src/main/resources/mapping.json` and `rego/`) and
+Inventory made on 2026-11-11 by reading the source code of the versions used by the
+CitCom connector configuration: **odrl-pap 1.4.10** (`src/main/resources/mapping.json` and `rego/`) and
 **contract-management 3.3.12** (`pap/PAPAdapter.java`). Re-check it when either one
 is upgraded.
 
@@ -40,8 +40,7 @@ For every completed order it creates the offer's ODRL policy in the provider's P
 
 A purchase therefore binds access to the buyer's organisation. A shared role
 such as `clearence1` does not give access to datasets the buyer did not buy.
-Confirmed on the live PAP on 2026-11-11 (VRAIN's waste-containers purchase) and by the
-tests (`other_buyer`, `stranger`).
+Confirmed by the tests (`other_buyer`, `stranger`).
 
 `PAPAdapter` reads `odrl:permission` as one object, while the generated policy has a
 one-element list. It works because TMForum stores the spec in NGSI-LD and returns
@@ -64,28 +63,23 @@ one permission per policy.
 - **What happens after delivery.** Copies, derived data and model training are
   outside the gateway.
 
-## Findings on the current policies
+## Lessons for connectors
 
-1. **Every offer used `odrl:use` (any method). CONFIRMED and FIXED.** On 2026-11-11,
-   townhall-vlc's OPA was asked, with VRAIN's live purchase policy, about
-   POST, PATCH, PUT, DELETE and `entityOperations/delete?type=WasteContainer` on
-   `/lepus/ngsi-ld` as VRAIN, and allowed all of them. Nothing was sent to Lepus or
-   Orion-LD. The batch delete passes the type check through the query string
-   whatever IDs the body carries. Lepus forwards writes to VLCi's real Orion. Fix
-   in dataspace-on-upv `fix/read-only-data-routes`: `methods: ["GET"]` on the
-   NGSI-LD routes, which also covers the policies already in the PAP, and
-   `odrl:read` in the dataset offers, so `dataset-access` generates `odrl:read`.
-   Lesson: never let the gateway route expose more methods than the class allows.
-2. **`clearence1` carries no meaning.** All four datasets use it. Thanks to the
-   buyer binding it isn't a leak, but the rulebook should give roles a meaning
-   (levels or classes) or drop them.
-3. **The verifier policy lists every role of a credential type.** The verifier
-   checks that every role in the credential is in the TIL entry's allowed values (a
-   subset check), and a consumer's users hold all their roles. TIL entries themselves
-   are per order (scoped), see [revocation-and-trust-anchor](revocation-and-trust-anchor.md).
+1. **The gateway route must not allow more methods than the class.** `odrl:use` means
+   any method. A dataset offering that used it let a buyer write and delete through a
+   translator that forwards writes to the provider's platform. Dataset classes
+   generate `odrl:read`, and data routes accept only GET, which also covers policies
+   created before the fix.
+2. **Roles.** contract-management binds every purchase to the buyer's organisation, so
+   a role shared by every offering is not a leak, but it carries no meaning (rulebook
+   open decision 9).
+3. **The verifier policy lists every role of a credential type.** The verifier checks
+   that every role in the credential is in the trusted issuers list entry's allowed
+   values (a subset check), and a consumer's users hold all their roles. Entries are
+   per order (scoped), see [revocation-and-trust-anchor](revocation-and-trust-anchor.md).
    The generator derives this list automatically.
 
-## Tested (tests/opa, 2026-11-11)
+## Tested (tests/opa)
 
 What the generated Rego decides, per class, with odrl-pap 1.4.10 and OPA 1.11.0:
 
@@ -98,21 +92,23 @@ What the generated Rego decides, per class, with odrl-pap 1.4.10 and OPA 1.11.0:
 - **service-access**: any method under the path, buyer only; same denials for
   path, party and credential.
 
-Gaps: OPA allows them, so the gateway has to block them (`GAP_` tests). All closed on
-2026-11-12; the ones on Lepus routes only for Lepus ≥ v1.4 (never go back below it).
+Gaps: OPA allows them, so the connector has to block them (`GAP_` tests). How each
+kind of connector does it is in the [implementation profiles](implementation-profiles.md);
+each participant shows it in its conformance evidence.
+
 On the `/ngsi-ld` routes (Orion-LD, Scorpio) the id is the whole URN, so
 `urn:ngsi-ld:T:…` only finds entities whose id starts with that type: this holds as long
-as the provider's entity ids follow the `urn:ngsi-ld:<type>:<id>` convention (Lepus's
-plain VLCi ids did not, which is why it needed the fix). A provider that loads data
-with other ids must say so before offering it.
+as the provider's entity ids follow the `urn:ngsi-ld:<type>:<id>` convention (NGSI-v2
+platforms behind Lepus may use plain ids, which is why Lepus checks the type itself). A
+provider that loads data with other ids must say so before offering it.
 
-| Case | Why OPA allows it | Blocked by | Status (2026-11-11) |
-|---|---|---|---|
-| `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus sends Orion the URN's type, replacing the client's `?type=` | closed, Lepus v1.3 (dataspace-on-upv PR #45) |
-| `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus forwards the `?type=` the policy checked, Orion enforces it | closed, Lepus v1.3 (PR #45) |
-| `GET …/entities?type=T&scopeQ=<other collection>` | the policy checks the type, not the collection (Lepus maps `scopeQ` to a VLCi servicePath) | Lepus serves only the servicePaths of its map, any other `scopeQ` gets 400 | closed, Lepus v1.4 (dataspace-on-upv PR #47, deployed 2026-11-12) |
-| `GET …/types?type=T` | same fallback | data routes only serve `/v1/entities{,/*}` | closed, dataspace-on-upv PR #42 |
-| header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (and the tenant headers) | closed, dataspace-on-upv PR #39, #40 |
+| Case | Why OPA allows it | Blocked by |
+|---|---|---|
+| `GET …/entities/urn:ngsi-ld:T:<id of another type>` | the type is read from the URN the client writes | Lepus sends Orion the URN's type, replacing the client's `?type=` |
+| `GET …/entities/<other urn>/attrs/a?type=T` | last path segment has no type → falls back to `?type=` | Lepus forwards the `?type=` the policy checked, Orion enforces it |
+| `GET …/entities?type=T&scopeQ=<other collection>` | the policy checks the type, not the collection (Lepus maps `scopeQ` to a servicePath of the NGSI-v2 platform) | Lepus serves only the servicePaths of its map, any other `scopeQ` gets 400 |
+| `GET …/types?type=T` | same fallback | data routes only serve `/v1/entities{,/*}` |
+| header `x-stripped-path: <bought path>` on another path | `http:path` prefers that header | APISIX `proxy-rewrite` removes it (and the tenant headers) |
 
 The OPA-level tests keep asserting `allow` for these cases: OPA still allows them,
 whatever the gateway does. They fail, and must be revisited, if odrl-pap changes.

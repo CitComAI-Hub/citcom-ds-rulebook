@@ -3,23 +3,22 @@
 Rules of the CitCom data space, and the code that turns them into the access
 policies and the terms and conditions published on the marketplace.
 
-- [`rulebook/`](rulebook/README.md): the rules, written for people (draft v0.2), with
-  the decisions log and the open decisions.
-- [`classes/`](classes/): policy classes. `<class>.md` says what the class means and
-  what is enforced; `<class>.terms.md` is the template of the terms and conditions
-  every offer of that class publishes.
+- [`rulebook/`](rulebook/README.md): the rules, written for every participant, technical
+  or not (draft v0.2), with the decisions log and the open decisions. No participant's
+  datasets or deployments, and no technical detail.
+- [`classes/`](classes/): policy classes. `<class>.md` says, in plain words, what the
+  class gives and asks (every offering links to it from the marketplace), then what is
+  enforced and how; `<class>.terms.md` is the template of the terms and conditions
+  every offering of that class publishes.
 - [`offers/`](offers/): each provider's offers, as a class plus parameters, and the
   values that fill the terms templates.
 - [`rulebook_gen/`](rulebook_gen/): the generator (Python ≥ 3.11, standard library only).
 - [`tests/`](tests/): unit tests, and [`tests/opa/`](tests/opa/) runs `opa test` on the
   Rego that odrl-pap generates from every offer.
-- [`docs/enforcement-capabilities.md`](docs/enforcement-capabilities.md): what odrl-pap +
-  OPA can and cannot enforce, and what the tests showed.
-- [`docs/implementation-profiles.md`](docs/implementation-profiles.md): how each kind of
-  connector (Lepus over NGSI-v2, native NGSI-LD broker, web services) meets R8.5 and
-  R8.6, and the known non-conformities.
-- [`docs/revocation-and-trust-anchor.md`](docs/revocation-and-trust-anchor.md): how access
-  is revoked, and the record of trust-anchor changes.
+- [`docs/`](docs/README.md): technical annex (enforcement capabilities, implementation
+  profiles per kind of connector, revocation and trust-anchor record). Generic too: the
+  evidence of a specific deployment goes in its participant's conformance evidence
+  (rulebook R8.7; for the operator's deployment, `CONFORMANCE.md` in dataspace-on-upv).
 - [`trust-anchor-changes.md`](trust-anchor-changes.md): trust-anchor changes made by hand (R2.5).
 - [`PLAN.md`](PLAN.md): what is done and what comes next.
 
@@ -113,7 +112,7 @@ offer), downloads the bundles the connector's OPA would get and runs `opa test` 
 provider. The expected decisions per class are in [`tests/opa/cases.py`](tests/opa/cases.py);
 `build.py` turns them into Rego tests. `GAP_` tests assert requests that OPA **allows**
 but the class should not: they are blocked (or still to be blocked) at the gateway, see
-[enforcement-capabilities](docs/enforcement-capabilities.md#tested-testsopa-2026-11-11).
+[enforcement-capabilities](docs/enforcement-capabilities.md#tested-testsopa).
 
 Versions match dataspace-on-upv. When one is upgraded there, update it here and re-run:
 

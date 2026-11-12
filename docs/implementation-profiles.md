@@ -8,7 +8,7 @@ are published.
 
 Profiles do not name participants. Each participant keeps the **evidence** of its own
 conformance (its datasets, deployed versions, checks run and their results, known
-non-conformities) in its own repository, and the operator reviews it (R8.6). For the
+non-conformities) in its own repository, and the operator reviews it (R8.7). For the
 connectors the operator deploys, that is `CONFORMANCE.md` in dataspace-on-upv.
 
 ## Background: why the request is not enough
