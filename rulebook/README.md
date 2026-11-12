@@ -299,9 +299,11 @@ it)*:
 
 **R8.7** Conformity scheme. Each participant keeps **conformance evidence**: how its
 connector and data meet §8 (the category of each dataset, the checks it ran and their
-results, known non-conformities and their fix). It keeps it up to date, and the
-operator reviews it before the participant's offerings are published and after
-relevant changes *(audited)*. The [technical annex](../docs/) says what each kind of
+results, known non-conformities and their fix). It keeps it up to date. The operator
+reviews it **once per provider**, before the participant can publish offerings (it then
+gets the provider role in the marketplace), and again after relevant changes to its
+connector *(audited)*. Each offering is then published directly: its policies and
+terms come from its class (R2.4), so it needs no review of its own. The [technical annex](../docs/) says what each kind of
 connector has to show.
 
 **R8.8** Data space registry. Anyone taking part can check the rules and who takes
@@ -360,6 +362,7 @@ offerings, exclusion (R4.2).
 | 2026-11-12 | Service terms state that what users enter is used only to provide the service (clause 8). | R7.1 |
 | 2026-11-12 | Structure aligned with the DSSC Blueprint v3.0 (rulebook v0.3): agreements as institutional, data sharing and services; members and participants; data rights holders; admission criteria and reasons for a denial; conformity scheme and data space registry. | R2.1, §3, R4.1, R4.6, R4.7, §5, R6.3, R8.7, R8.8 |
 | 2026-11-12 | Access roles: the buyer gives them to its people or software; one role per service, one shared role for software access to datasets. | R3.4 |
+| 2026-11-12 | Offerings are published without manual review: their content comes from a class. The operator reviews each provider's connector once, before it gets the provider role, and after relevant changes. | R8.7 |
 | 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
 
 ## Open decisions
