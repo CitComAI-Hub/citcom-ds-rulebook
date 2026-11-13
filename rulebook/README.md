@@ -21,6 +21,8 @@ the data space, not how the software does it. Three other places complete it:
   for the people who run a connector.
 - **Each participant's conformance evidence**: how its own connector and data meet
   §8, kept by the participant and reviewed by the operator.
+- **Accession agreement** ([`agreements/`](../agreements/accession-agreement.md)): what
+  an organisation signs to join (R4.1).
 
 Every rule has an id and one of three kinds:
 
@@ -125,10 +127,12 @@ The role names are in each class (§7).
 
 ## 4. Joining and leaving
 
-**R4.1** To join, an organisation registers through the onboarding portal, says which
-roles it intends to take (§3), and accepts this rulebook. That acceptance is the
-**accession agreement**. The governance authority (or the operator, by delegation)
-approves it, and the organisation is then added to the trust anchor *(enforced:
+**R4.1** To join, an organisation registers through the onboarding portal and its legal
+representative signs the [**accession agreement**](../agreements/accession-agreement.md):
+it says which roles the organisation intends to take (§3) and accepts this rulebook as
+in force at each moment (R2.3). The governance authority (or the operator, by
+delegation) approves the registration, which concludes the agreement, and the
+organisation is then added to the trust anchor *(enforced:
 credentials of organisations that are not in the trust anchor are rejected
 everywhere)*.
 
@@ -173,7 +177,7 @@ cover services provided in or to the data space.
 | Category | Agreement | In this data space |
 |---|---|---|
 | Institutional | Founding agreement | The CitCom.ai consortium agreement (R2.1). |
-| Institutional | Accession agreement | Acceptance of this rulebook at onboarding (R4.1). |
+| Institutional | Accession agreement | The [accession agreement](../agreements/accession-agreement.md), signed at onboarding: it accepts this rulebook as in force at each moment (R4.1). |
 | Institutional | General terms and conditions | This rulebook, including the policy classes (§7). |
 | Data sharing | Data product contract | The marketplace **order** of a dataset offering, between provider and consumer. Its terms are those of the offering's policy class (§7) plus the provider's additional requirements (R5.3). |
 | Services | Value-creation service agreement | The marketplace **order** of a service offering (class `service-access`), between service provider and consumer. Same rules as a data product contract. |
@@ -364,6 +368,7 @@ offerings, exclusion (R4.2).
 | 2026-11-12 | Access roles: the buyer gives them to its people or software; one role per service, one shared role for software access to datasets. | R3.4 |
 | 2026-11-12 | Offerings are published without manual review: their content comes from a class. The operator reviews each provider's connector once, before it gets the provider role, and after relevant changes. | R8.7 |
 | 2026-11-12 | The rulebook is generic and readable by non-technical people: no participant's datasets or deployments, no technical detail in the rules. Each participant keeps its conformance evidence. | R6.4, R8.7 |
+| 2026-11-13 | Accession agreement of our own, written in this repository (its PDF is generated from it). It refers to the rulebook in force at each moment, not to a version; R2.3 (30-day notice) and the right to leave protect participants. | R4.1, §5 |
 
 ## Open decisions
 

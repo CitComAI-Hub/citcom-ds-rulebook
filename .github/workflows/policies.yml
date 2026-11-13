@@ -22,6 +22,10 @@ jobs:
           python-version: "3.12"
       - name: Unit tests
         run: python -m unittest discover -s tests -t . -v
+      - name: Accession agreement PDF matches its Markdown
+        run: |
+          pip install -r agreements/requirements.txt
+          python agreements/build_pdf.py --check
       - name: Offers are valid and build
         run: python -m rulebook_gen build --out build
       - name: opa test (odrl-pap 1.4.10, OPA 1.11.0)
