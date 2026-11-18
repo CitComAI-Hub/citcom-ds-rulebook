@@ -10,7 +10,7 @@ class GeneratorTest(unittest.TestCase):
     def test_verifier_lists_every_role_of_the_credential_type(self):
         verifier = self.out[("vrain_upv", "container-location")][0]
         roles = verifier["productSpecCharacteristicValue"][0]["value"][0]["claims"][0]["allowedValues"]
-        self.assertEqual(roles, ["container_location_user", "waste_collection_user"])
+        self.assertEqual(roles, ["container_location_user", "tourism_user", "waste_collection_user"])
 
     def test_dataset_policy_constrains_path_and_type(self):
         policy = self.out[("townhall_vlc", "air-quality")][1]["productSpecCharacteristicValue"][0]["value"][0]

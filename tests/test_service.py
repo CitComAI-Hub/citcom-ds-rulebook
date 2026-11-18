@@ -56,6 +56,19 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual(status, 200, body)
         self.assertIn("degrades the Service (one job at a time);", body["terms"]["License"])
         self.assertIn("through the marketplace.\n", body["terms"]["License"])
+        self.assertIn("public administration. It is not permitted to:", body["terms"]["License"])
+
+    def test_use_note_restricts_permitted_use(self):
+        values = {f: "x" for f in terms.template("service-access").get_identifiers() if not f.endswith("_note")}
+        status, body = self.call("/generate", {
+            "class": "service-access",
+            "provider": {"host": "acme.example.org", "terms": values},
+            "offer": {"name": "app", "path": "/app", "role": "app_user",
+                      "terms": {"use_note": " Only for non-commercial purposes."}},
+        })
+        self.assertEqual(status, 200, body)
+        self.assertIn("public administration. Only for non-commercial purposes. It is not permitted to:",
+                      body["terms"]["License"])
 
     def test_generates_what_build_generates(self):
         # every offer of offers/, asked through the service, gives the same policies
@@ -121,7 +134,7 @@ class ServiceTest(unittest.TestCase):
             "provider_specifications": vrain,
         })
         self.assertEqual(status, 200, body)
-        allowed = ["container_location_user", "route_planner_user", "waste_collection_user"]
+        allowed = ["container_location_user", "route_planner_user", "tourism_user", "waste_collection_user"]
         self.assertIn(json.dumps(allowed), json.dumps(body["characteristics"][0]))
         self.assertEqual(sorted(u["id"] for u in body["sibling_updates"]), sorted(x["id"] for x in vrain))
         for update in body["sibling_updates"]:
