@@ -2,7 +2,7 @@
 
 **2. Access.** Access requires a valid verifiable credential, issued by the user organization and authorized in the data space after acquiring the offering. The user organization is responsible for the safekeeping of its credentials and for their use by its authorized systems and people. The Provider may revoke access if these terms are breached.
 
-**3. Licence and permitted use.** The data is open data, published by ${source_publisher} under the ${licence} licence (${licence_url}); source dataset: ${source_url}. The data space adds no restriction to that licence: the data may be used, shared and adapted for any purpose, including commercial ones, as long as the attribution of clause 4 is kept. When accessing the Service, it is not permitted to:
+**3. Licence and permitted use.** The data is open data, published by ${source_publisher} under the ${licence} licence (${licence_url}); source dataset: ${source_url}. The data space adds no restriction to that licence: the data may be used, shared and adapted for any purpose, including commercial ones, as long as the attribution of clause 4 is kept.${licence_note} When accessing the Service, it is not permitted to:
 - make massive requests, or requests at a frequency that degrades ${load_targets};
 - try to bypass the authentication and authorization mechanisms of the data space.
 

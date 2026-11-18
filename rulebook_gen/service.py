@@ -86,6 +86,7 @@ TERMS_FIELDS = {
     "source_url": ("offer", False, "Link to the public source dataset", "https://opendata.example.org/dataset/traffic"),
     "service_name": ("offer", False, "The service, as named in the terms", "the Route Planner"),
     "results": ("offer", False, "What the service produces", "routes"),
+    "licence_note": ("offer", True, "Extra sentence on the licence, e.g. share-alike, after the attribution", "Adapted databases that are made public must be shared under the same licence."),
     "use_note": ("offer", True, "Extra sentence restricting the permitted use, after 'public administration.'", "Only for non-commercial purposes."),
     "load_note": ("offer", True, "Note on fair use, after 'degrades the Service'", "(optimisations run one at a time)"),
     "availability_note": ("offer", True, "Extra sentence on availability", "Jobs in progress are lost if the Service restarts."),
