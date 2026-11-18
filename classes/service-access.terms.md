@@ -2,7 +2,7 @@
 
 **2. Access.** Access requires a valid verifiable credential, issued by the user organization and authorized in the data space after acquiring the offering. The user organization is responsible for the safekeeping of its credentials and for their use by its authorized people. The Provider may revoke access if these terms are breached.
 
-**3. Permitted use.** The ${results} and results may be used in the user organization's own planning, analyses and services, in particular for research, teaching, innovation and public administration. It is not permitted to:
+**3. Permitted use.** The ${results} and results may be used in the user organization's own planning, analyses and services, in particular for research, teaching, innovation and public administration.${use_note} It is not permitted to:
 - resell or redistribute the Service or the underlying data as an equivalent product without the written authorization of the Provider;
 - make massive requests, or requests at a frequency that degrades the Service${load_note};
 - try to bypass the authentication and authorization mechanisms of the data space.

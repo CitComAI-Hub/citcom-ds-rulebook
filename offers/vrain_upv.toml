@@ -12,6 +12,7 @@ provider_name = "VRAIN, Universitat Politècnica de València"
 data_protection_law = "the GDPR and Spanish Organic Law 3/2018"
 governing_law = "Spanish law"
 courts = "the courts of the city of Valencia"
+use_note = ""
 load_note = ""
 availability_note = ""
 data_protection_note = ""
@@ -45,3 +46,18 @@ origin = 'The containers come from the **Ajuntament de València** (VLCi platfor
 quality = 'The layouts are an aid to planning. Distances are straight-line distances, the population is an estimate on a grid of about 100 m, and the containers in the platform may contain errors or gaps (the platform only includes the containers with a sensor). The Service is provided "as is", without any warranty of accuracy or fitness for a particular purpose.'
 availability_note = " Optimisations in progress are lost if the Service restarts. The results depend on the availability of the data of the Ajuntament and of the population grid."
 data_protection_note = " The names given to the layouts are visible to the other users of the Service."
+
+[[offer]]
+name = "tourism"
+class = "service-access"
+path = "/tourism"
+credential = "ServiceCredential"
+role = "tourism_user"
+
+[offer.terms]
+service_name = "the Tourism Recommender"
+results = "recommendations"
+use_note = " The Service may only be used for non-commercial purposes, because the visit patterns it learns from are licensed for academic, non-commercial use (clause 4)."
+origin = 'The popularity of the places and the places visited together are learnt from aggregates of the geotagged photos of the **YFCC100M** dataset (Yahoo Flickr Creative Commons 100M, used under the Yahoo Webscope terms for academic, non-commercial use); the Service holds no photos or identifiers of their authors. The catalog of places is built from **OpenStreetMap** (© OpenStreetMap contributors, ODbL), **Wikidata** (CC0), **Wikipedia** (CC BY-SA), **Wikimedia Commons** (each image under its own licence) and the *Inventario General del Patrimonio Cultural Valenciano* of the **Generalitat Valenciana** (CC BY 4.0); each place names its sources in its `dataProvider` attribute. When disseminating results, cite: *"Tourism Recommender, VRAIN - Universitat Politècnica de València; data © OpenStreetMap contributors, Wikidata, Wikipedia and Generalitat Valenciana; visit patterns from YFCC100M (Thomee et al., 2016)"*.'
+quality = 'The recommendations are an aid. Visit durations are estimates (marked as such in the data), opening hours are only those published in OpenStreetMap, some descriptions are generated from structured data (marked as such), and the open sources may contain errors or gaps. The Service is provided "as is", without any warranty of accuracy, availability of the places or fitness for a particular purpose.'
+data_protection_note = " The preferences and position of the users stay in their browser and are sent only to compute each response, without being kept."
