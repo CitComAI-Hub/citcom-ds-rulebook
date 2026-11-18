@@ -20,6 +20,15 @@ class GeneratorTest(unittest.TestCase):
             {"http:path": "/lepus/ngsi-ld", "ngsi-ld:entityType": "AirQualityObserved"},
         )
 
+    def test_offer_with_several_paths_allows_any_of_them(self):
+        policy = self.out[("townhall_vlc", "traffic-flow")][1]["productSpecCharacteristicValue"][0]["value"][0]
+        path, entity_type = policy["odrl:permission"][0]["odrl:target"]["odrl:refinement"]["odrl:and"]
+        self.assertEqual(
+            [(c["odrl:leftOperand"], c["odrl:operator"], c["odrl:rightOperand"]["@value"]) for c in path["odrl:or"]],
+            [("http:path", "http:isInPath", "/lepus/ngsi-ld"), ("http:path", "http:isInPath", "/ngsi-ld")],
+        )
+        self.assertEqual(entity_type["odrl:rightOperand"]["@value"], "TrafficFlowObserved")
+
     def test_datasets_are_read_only_and_services_are_not(self):
         def action(key):
             return self.out[key][1]["productSpecCharacteristicValue"][0]["value"][0]["odrl:permission"][0]["odrl:action"]

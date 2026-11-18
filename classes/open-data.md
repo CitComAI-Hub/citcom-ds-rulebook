@@ -41,4 +41,4 @@ The full terms published with each offering are generated from
 Same enforcement as [dataset-access](dataset-access.md). The difference is legal: no
 "within CitCom" restriction and no deletion duty.
 
-Parameters in `offers/`: `path`, `entity_type`, `credential`, `role`.
+Parameters in `offers/`: `path` (one prefix, or a list of them when the provider serves the same data from several backends), `entity_type`, `credential`, `role`.

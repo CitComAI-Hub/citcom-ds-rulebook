@@ -38,6 +38,12 @@ def load_offers(offers_dir):
             missing = REQUIRED[cls] - offer.keys()
             if missing:
                 sys.exit(f"{file}: offer {offer['name']}: missing {sorted(missing)}")
+            path = offer["path"]
+            if not (isinstance(path, str) or (
+                isinstance(path, list) and len(path) > 1 and all(isinstance(p, str) for p in path)
+                and len(set(path)) == len(path)
+            )):
+                sys.exit(f"{file}: offer {offer['name']}: path must be a string or a list of 2+ distinct strings")
             missing = terms.missing(provider, offer)
             if missing:
                 sys.exit(f"{file}: offer {offer['name']}: terms need {missing} in [provider.terms] or [offer.terms]")

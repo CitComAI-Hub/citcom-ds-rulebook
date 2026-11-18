@@ -2,10 +2,12 @@
 
 Each class has a default; an offer can set its own `rate_limit = {count = N,
 time_window = S}` in offers/*.toml. The gateway route of a provider serves every
-offer under one path, so the limit is generated per path, and all the offers of a
-path must agree. dataspace-on-upv puts it on the route as APISIX `limit-count`,
+offer under one path, so the limit is generated per path (an offer with several
+paths puts its limit on each), and all the offers of a path must agree. dataspace-on-upv puts it on the route as APISIX `limit-count`,
 counted per issuer of the buyer's credential (the buying organisation), per route.
 """
+
+from .policies import paths
 
 DEFAULTS = {
     # reads of a provider's data: protects the source (Lepus reads VLCi live)
@@ -30,10 +32,10 @@ def per_path(offers):
     out, by = {}, {}
     for offer in offers:
         limit = of_offer(offer)
-        path = offer["path"]
-        if path in out and out[path] != limit:
-            raise ValueError(
-                f"offers {by[path]} and {offer['name']} share {path} but have different rate limits"
-            )
-        out[path], by[path] = limit, offer["name"]
+        for path in paths(offer):
+            if path in out and out[path] != limit:
+                raise ValueError(
+                    f"offers {by[path]} and {offer['name']} share {path} but have different rate limits"
+                )
+            out[path], by[path] = limit, offer["name"]
     return dict(sorted(out.items()))

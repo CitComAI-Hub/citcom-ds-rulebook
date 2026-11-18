@@ -74,6 +74,15 @@ class MarketplaceAuditTest(unittest.TestCase):
         }
         self.assertEqual(self.status("vrain_upv/waste-collection")[0], "FAIL")
 
+    def test_or_of_other_operands_fails(self):
+        # several paths are an odrl:or of paths; an alternative on anything else
+        # (here: any entity type under the second path) is not what a class generates
+        permission = _odrl(self.spec("townhall_vlc/traffic-flow"))["odrl:permission"]
+        permission = permission[0] if isinstance(permission, list) else permission
+        alternatives = permission["odrl:target"]["odrl:refinement"]["odrl:and"][0]["odrl:or"]
+        alternatives[1]["odrl:leftOperand"] = "ngsi-ld:entityType"
+        self.assertEqual(self.status("townhall_vlc/traffic-flow")[0], "FAIL")
+
     def test_verifier_without_a_sibling_role_fails(self):
         verifier = next(c for c in self.spec("vrain_upv/waste-collection")["productSpecCharacteristic"] if c["name"] == "Verifier policy")
         value = verifier["productSpecCharacteristicValue"]

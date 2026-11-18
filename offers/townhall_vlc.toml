@@ -35,10 +35,12 @@ entity_type = "AirQualityObserved"
 credential = "MachineCredential"
 role = "clearence1"
 
+# Road sections of VLCi (through Lepus) and measurement points of the geoportal
+# (open data, loaded into Orion-LD by Airflow): one dataset, two backends.
 [[offer]]
 name = "traffic-flow"
 class = "dataset-access"
-path = "/lepus/ngsi-ld"
+path = ["/lepus/ngsi-ld", "/ngsi-ld"]
 entity_type = "TrafficFlowObserved"
 credential = "MachineCredential"
 role = "clearence1"

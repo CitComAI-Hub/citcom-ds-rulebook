@@ -45,4 +45,4 @@ duty yet (rulebook open decision 5).
 | Read only | `odrl:read` (GET only) and GET-only gateway routes |
 | Fair use | gateway request limit on the offering's route, counted per credential issuer; HTTP 429 over the limit |
 
-Parameters in `offers/`: `path`, `entity_type`, `credential`, `role`.
+Parameters in `offers/`: `path` (one prefix, or a list of them when the provider serves the same data from several backends), `entity_type`, `credential`, `role`.

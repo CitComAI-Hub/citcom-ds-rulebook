@@ -10,6 +10,8 @@ closes the gap. See AUDIT-fable.md in dataspace-on-upv (F1, F2).
 of another offer of the same provider, and a participant that bought nothing.
 """
 
+from rulebook_gen.policies import paths
+
 
 def _req(method, path, query=None, body=None, headers=None, who="buyer", cred=None, roles=None):
     return {
@@ -24,8 +26,20 @@ def _req(method, path, query=None, body=None, headers=None, who="buyer", cred=No
     }
 
 
-def dataset_access(offer):
-    p, t = offer["path"], offer["entity_type"]
+def _per_path(build):
+    """Cases of every path of the offer; with several paths, named after their index."""
+    def cases(offer):
+        ps = paths(offer)
+        if len(ps) == 1:
+            return build(ps[0], offer)
+        return [(f"path{i}_{name}", expected, req)
+                for i, p in enumerate(ps) for name, expected, req in build(p, offer)]
+    return cases
+
+
+@_per_path
+def dataset_access(p, offer):
+    t = offer["entity_type"]
     urn = f"urn:ngsi-ld:{t}:x1"
     other = "OtherType"
     body = f'{{"id":"{urn}","type":"{t}"}}'
@@ -69,8 +83,8 @@ def dataset_access(offer):
     ]
 
 
-def service_access(offer):
-    p = offer["path"]
+@_per_path
+def service_access(p, offer):
     return [
         ("get_page", "allow", _req("GET", f"{p}/")),
         ("get_api", "allow", _req("GET", f"{p}/api/items", {"q": "x"})),

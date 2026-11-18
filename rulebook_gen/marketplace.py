@@ -51,14 +51,22 @@ def _list(value):
 
 
 def _constraints(refinement):
-    """{leftOperand: rightOperand value} of a constraint or an odrl:and of them."""
+    """{leftOperand: rightOperand value} of a constraint or an odrl:and of them. An
+    odrl:or of constraints on one leftOperand (several paths) gives a list of values."""
     refinement = canon(refinement)
-    parts = _list(refinement.get("odrl:and", refinement))
-    return {
-        c["odrl:leftOperand"]: canon(c["odrl:rightOperand"])["@value"]
-        for c in parts
-        if "odrl:leftOperand" in c
-    }
+    out = {}
+    for c in _list(refinement.get("odrl:and", refinement)):
+        if "odrl:leftOperand" in c:
+            out[c["odrl:leftOperand"]] = canon(c["odrl:rightOperand"])["@value"]
+        elif "odrl:or" in c:
+            alternatives = [canon(a) for a in _list(c["odrl:or"])]
+            left = {a.get("odrl:leftOperand") for a in alternatives}
+            values = [canon(a.get("odrl:rightOperand") or {}).get("@value") for a in alternatives]
+            # only what the classes generate: 2+ distinct values of one leftOperand
+            if len(left) != 1 or None in left or len(values) < 2 or len(set(map(str, values))) != len(values):
+                raise KeyError("odrl:or")
+            out[left.pop()] = values
+    return out
 
 
 def _characteristic(spec, name):

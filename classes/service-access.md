@@ -33,4 +33,4 @@ The full terms published with each offering are generated from
 | Only this service | `http:path isInPath <path>` |
 | Fair use | gateway request limit on the offering's route, counted per credential issuer; HTTP 429 over the limit |
 
-Parameters in `offers/`: `path`, `credential`, `role`.
+Parameters in `offers/`: `path` (one prefix, or a list of them when the provider serves the same data from several backends), `credential`, `role`.

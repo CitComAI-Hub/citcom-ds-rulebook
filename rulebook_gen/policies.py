@@ -34,6 +34,21 @@ def _constraint(left, operator, right):
     }
 
 
+def paths(offer):
+    """The path prefixes of an offer: `path` is one prefix or a list of them (one
+    dataset served by several backends of the same provider, e.g. Lepus and Orion-LD)."""
+    path = offer["path"]
+    return [path] if isinstance(path, str) else list(path)
+
+
+def _path_constraint(offer):
+    """http:isInPath for one prefix, or an odrl:or of them (odrl-pap >= 1.4)."""
+    constraints = [_constraint("http:path", "http:isInPath", p) for p in paths(offer)]
+    if len(constraints) == 1:
+        return constraints[0]
+    return {"@type": "odrl:LogicalConstraint", "odrl:or": constraints}
+
+
 def _all_of(constraints):
     if len(constraints) == 1:
         return constraints[0]
@@ -72,17 +87,17 @@ def _odrl_policy(provider, offer, context, action, target_constraints):
 
 
 def dataset_access(provider, offer):
-    """Read-only (GET) access to one NGSI-LD entity type under one path prefix."""
+    """Read-only (GET) access to one NGSI-LD entity type under its path prefix(es)."""
     targets = [
-        _constraint("http:path", "http:isInPath", offer["path"]),
+        _path_constraint(offer),
         _constraint("ngsi-ld:entityType", "odrl:eq", offer["entity_type"]),
     ]
     return _odrl_policy(provider, offer, CONTEXT | NGSI_LD_CONTEXT, "odrl:read", targets)
 
 
 def service_access(provider, offer):
-    """Access to a web/API service under one path prefix (any method: web apps POST)."""
-    targets = [_constraint("http:path", "http:isInPath", offer["path"])]
+    """Access to a web/API service under its path prefix(es) (any method: web apps POST)."""
+    targets = [_path_constraint(offer)]
     return _odrl_policy(provider, offer, CONTEXT, "odrl:use", targets)
 
 

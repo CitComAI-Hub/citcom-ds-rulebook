@@ -21,6 +21,13 @@ class LimitsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             limits.per_path([a, b])
 
+    def test_offer_with_several_paths_limits_each(self):
+        offer = {"name": "x", "class": "dataset-access", "path": ["/a", "/b"], "rate_limit": {"count": 7}}
+        self.assertEqual(limits.per_path([offer]), {"/a": {"count": 7, "time_window": 60}, "/b": {"count": 7, "time_window": 60}})
+        other = {"name": "y", "class": "dataset-access", "path": "/b"}
+        with self.assertRaises(ValueError):
+            limits.per_path([offer, other])
+
     def test_invalid_values_are_rejected(self):
         with self.assertRaises(ValueError):
             limits.of_offer({"name": "x", "class": "open-data", "rate_limit": {"count": 0}})

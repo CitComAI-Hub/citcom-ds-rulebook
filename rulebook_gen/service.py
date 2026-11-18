@@ -65,7 +65,7 @@ CLASS_INFO = {
 
 FIELDS = {
     "name": ("Short name of the offer: lowercase letters, digits and hyphens", re.compile(r"^[a-z0-9][a-z0-9-]{0,62}$")),
-    "path": ("Path prefix of its route in the provider's gateway, e.g. /ngsi-ld or /route-planner", re.compile(r"^/(?!.*\.\.)[A-Za-z0-9._~/-]{0,200}$")),
+    "path": ("Path prefix of its route in the provider's gateway, e.g. /ngsi-ld or /route-planner; a list of 2+ prefixes if the same data is served from several backends", re.compile(r"^/(?!.*\.\.)[A-Za-z0-9._~/-]{0,200}$")),
     "entity_type": ("NGSI-LD entity type, a Smart Data Model where one exists", re.compile(r"^[A-Za-z][A-Za-z0-9]{0,99}$")),
     "role": ("Role the buyer gives to the people who use the service, e.g. route_planner_user", re.compile(r"^[a-z][a-z0-9_]{0,62}$")),
 }
@@ -170,7 +170,11 @@ def generate(request):
         offer["role"] = info["role"]
     for field in info["fields"]:
         value = offer_in.get(field)
-        if not isinstance(value, str) or not FIELDS[field][1].match(value):
+        # path: one prefix, or a list of 2+ distinct ones (same data, several backends)
+        values = value if field == "path" and isinstance(value, list) and len(value) > 1 else [value]
+        if len(set(map(str, values))) != len(values) or not all(
+            isinstance(v, str) and FIELDS[field][1].match(v) for v in values
+        ):
             raise InvalidRequest(f"offer.{field}: {FIELDS[field][0]}")
         offer[field] = value
     provider = {"id": host, "host": host, "terms": _terms_values(provider_in.get("terms"), "provider.terms")}
