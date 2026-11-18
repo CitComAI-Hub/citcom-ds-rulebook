@@ -75,3 +75,20 @@ source_url = "https://github.com/CitComAI-Hub/tourism-recommender"
 licence_note = " The catalog is a database derived from OpenStreetMap: an adapted database that is made public must also be shared under the ODbL. The descriptions taken from Wikipedia are under CC BY-SA 4.0 and must be shared alike; each image is under the licence of its own file."
 origin = 'The places come from **OpenStreetMap** (© OpenStreetMap contributors, ODbL), **Wikidata** (CC0), **Wikipedia** (CC BY-SA), **Wikimedia Commons** (each image under its own licence) and the *Inventario General del Patrimonio Cultural Valenciano* of the **Generalitat Valenciana** (CC BY 4.0); each place names its sources in its `dataProvider` attribute. When using or disseminating the data, cite: *"Points of interest of Valencia, VRAIN - Universitat Politècnica de València; data © OpenStreetMap contributors, Wikidata, Wikipedia and Generalitat Valenciana"*.'
 quality = 'The catalog was reviewed by sampling, not place by place. Visit durations are estimates (marked as such), opening hours are only those published in OpenStreetMap, some descriptions are generated from structured data (marked as such), and the open sources may contain errors or gaps. The data is provided "as is", without any warranty of accuracy, completeness or fitness for a particular purpose.'
+
+# Traffic signal controllers (geoportal, open data), loaded into Orion-LD by
+# Airflow as Smart Data Models Device: there is no SDM for traffic signals. The
+# policy covers every Device of the provider's Orion-LD, which holds only these.
+[[offer]]
+name = "traffic-signals"
+class = "open-data"
+path = "/ngsi-ld"
+entity_type = "Device"
+credential = "MachineCredential"
+role = "clearence1"
+
+[offer.terms]
+source_publisher = "the Ajuntament de València on its open data portal"
+licence = "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+licence_url = "https://creativecommons.org/licenses/by/4.0/"
+source_url = "https://opendata.vlci.valencia.es/dataset/reguladors-grups-semaforics-reguladores-grupos-semaforicos"
