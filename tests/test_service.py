@@ -134,7 +134,7 @@ class ServiceTest(unittest.TestCase):
             "provider_specifications": vrain,
         })
         self.assertEqual(status, 200, body)
-        allowed = ["container_location_user", "route_planner_user", "tourism_user", "waste_collection_user"]
+        allowed = ["container_location_user", "route_planner_user", "tourism_user", "urban_mobility_user", "waste_collection_user"]
         self.assertIn(json.dumps(allowed), json.dumps(body["characteristics"][0]))
         self.assertEqual(sorted(u["id"] for u in body["sibling_updates"]), sorted(x["id"] for x in vrain))
         for update in body["sibling_updates"]:

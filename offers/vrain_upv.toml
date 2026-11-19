@@ -61,3 +61,19 @@ use_note = " The Service may only be used for non-commercial purposes, because t
 origin = 'The popularity of the places and the places visited together are learnt from aggregates of the geotagged photos of the **YFCC100M** dataset (Yahoo Flickr Creative Commons 100M, used under the Yahoo Webscope terms for academic, non-commercial use); the Service holds no photos or identifiers of their authors. The catalog of places is built from **OpenStreetMap** (© OpenStreetMap contributors, ODbL), **Wikidata** (CC0), **Wikipedia** (CC BY-SA), **Wikimedia Commons** (each image under its own licence) and the *Inventario General del Patrimonio Cultural Valenciano* of the **Generalitat Valenciana** (CC BY 4.0); each place names its sources in its `dataProvider` attribute. When disseminating results, cite: *"Tourism Recommender, VRAIN - Universitat Politècnica de València; data © OpenStreetMap contributors, Wikidata, Wikipedia and Generalitat Valenciana; visit patterns from YFCC100M (Thomee et al., 2016)"*.'
 quality = 'The recommendations are an aid. Visit durations are estimates (marked as such in the data), opening hours are only those published in OpenStreetMap, some descriptions are generated from structured data (marked as such), and the open sources may contain errors or gaps. The Service is provided "as is", without any warranty of accuracy, availability of the places or fitness for a particular purpose.'
 data_protection_note = " The preferences and position of the users stay in their browser and are sent only to compute each response, without being kept."
+
+[[offer]]
+name = "urban-mobility"
+class = "service-access"
+path = "/urban-mobility"
+credential = "ServiceCredential"
+role = "urban_mobility_user"
+
+[offer.terms]
+service_name = "the Urban Mobility Digital Twin"
+results = "scenarios"
+load_note = " (scenarios run one at a time and the queue is limited)"
+origin = 'The traffic counts come from the **Ajuntament de València** (open data of its traffic measurement points, offered by townhall-vlc in this data space), the road network from **OpenStreetMap** (© OpenStreetMap contributors, ODbL) and the traffic signals from the open data of the Ajuntament. The simulation uses the **Urban Mobility** model of the **EU LDT Toolbox** (European Commission, EUPL-1.2) and **Eclipse SUMO** (EPL-2.0). When using or disseminating the results, cite: *"Urban Mobility Digital Twin, VRAIN - Universitat Politècnica de València, built on the EU LDT Toolbox Urban Mobility model and Eclipse SUMO; data of the Ajuntament de València and © OpenStreetMap contributors"*.'
+quality = 'The twin covers one zone of the city and is recalibrated with the latest counts; the Service shows the share of detectors it reproduces. Streets without a detector and the scenarios are model estimates, indicative and not forecasts: the demand is rebuilt from the counts, drivers are assumed to re-route by the current travel times and the network comes from OpenStreetMap, which may contain errors. The Service is provided "as is", without any warranty of accuracy or fitness for a particular purpose.'
+availability_note = " Scenarios in progress are lost if the Service restarts. The current state depends on the availability of the counts of the Ajuntament."
+data_protection_note = " The Service keeps no personal data: the scenarios contain only the streets closed and the demand chosen."
